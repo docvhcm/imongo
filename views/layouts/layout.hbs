@@ -154,30 +154,12 @@
                                     {{__ "Monitoring"}}
                                 </a>
                             </li>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link d-flex align-items-center dropdown-toggle" data-toggle="dropdown"
+                            <li class="nav-item">
+                                <a class="nav-link d-flex align-items-center"
                                     href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                                    <i class="material-icons md-18 mr-2">account_circle</i>
-                                    {{__ "Users"}}
+                                    <i class="material-icons md-18 mr-2">exit_to_app</i>
+                                    {{__ "Logout"}}
                                 </a>
-                                <div class="dropdown-menu dropdown-menu-right">
-                                    <a class="nav-link d-flex align-items-center text-muted"
-                                        href="{{app_context}}/app/logout">
-                                        <i class="material-icons md-18 ml-2 mr-2">group</i>
-                                        {{__ "Users"}}
-                                    </a>
-                                    <a href="#create-user" data-toggle="modal" class="nav-link d-flex align-items-center text-muted"
-                                        href="{{app_context}}/app/logout">
-                                        <i class="material-icons md-18 ml-2 mr-2">person_add</i>
-                                        {{__ "Create User"}}
-                                    </a>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="nav-link d-flex align-items-center text-muted"
-                                        href="{{app_context}}/app/logout">
-                                        <i class="material-icons md-18 ml-2 mr-2">exit_to_app</i>
-                                        {{__ "Logout"}}
-                                    </a>
-                                </div>
                             </li>
                             {{/if}}
                         </ul>

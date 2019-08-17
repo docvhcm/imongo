@@ -330,8 +330,7 @@ $(document).ready(function(){
             }
         })
         .done(function(data){
-            $('#del_user_name').append('<option>' + $('#new_username').val() + '</option>');
-            show_notification(data.msg, 'success');
+            show_notification(data.msg, 'success', true);
 
         // clear items
             $('#new_username').val('');
@@ -353,17 +352,17 @@ $(document).ready(function(){
         }
     });
 
-    $(document).on('click', '#user_delete', function(){
-        if(confirm('WARNING: Are you sure you want to delete this user?') === true){
+    $(document).on('click', '.delete-user', function(){
+        var $this = $(this);
+        var user = $this.data('user');
+        if(user && confirm('WARNING: Are you sure you want to delete this user?') === true){
             $.ajax({
                 method: 'POST',
                 url: $('#app_context').val() + '/users/' + $('#db_name').val() + '/user_delete',
-                data: {'username': $('#del_user_name option:selected').text()}
+                data: {'username': user}
             })
             .done(function(data){
-                $("#del_user_name option:contains('" + $('#del_user_name option:selected').text() + "')").remove();
-                $('#del_user_name').val($('#del_user_name option:first').val());
-                show_notification(data.msg, 'success');
+                show_notification(data.msg, 'success', true);
             })
             .fail(function(data){
                 show_notification(data.responseJSON.msg, 'danger');

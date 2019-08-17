@@ -1,55 +1,105 @@
-<h3 class="lead">{{__ "Collections"}}</h3>
-<table class="table">
-    <thead>
-        <tr>
-            <th class="border-top-0">{{__ "Name"}}</th>
-            <th class="border-top-0">{{__ "Storage"}}</th>
-            <th class="border-top-0">{{__ "Documents"}}</th>
-            <th class="border-top-0 text-center w-75px">
-                <a href="#create-collection-modal" data-toggle="modal"
-                    class="d-inline-flex align-items-center text-muted text-decoration-none clickable">
-                    <i class="material-icons md-18 mr-2 text-primary">add_circle_outline</i>
-                </a>
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        {{#each db_stats}}
-        {{#each this}}
-        <tr>
-            <td>
-                <div class="d-inline-flex align-items-center">
-                    <i class="material-icons text-muted md-18 mr-2">grid_on</i>
-                    <a href="{{app_context}}/app/{{@../key}}/{{@key}}/view">{{@key}}</a>
-                </div>
-            </td>
-            <td>
-                <div class="d-inline-flex align-items-center">
-                    <i class="material-icons text-muted md-18 mr-2">data_usage</i>
-                    {{formatBytes this.Storage}}
-                </div>
-            </td>
-            <td>
-                <div class="d-inline-flex align-items-center">
-                    <i class="material-icons text-muted md-18 mr-2">file_copy</i>
-                    {{this.Documents}}
-                </div>
-            </td>
-            <td>
-                <div class="d-inline-flex align-items-center">
-                    <a href="{{app_context}}/collection/{{../../db_name}}/{{@key}}/export/false" class="clickable">
-                        <i class="material-icons text-info md-18 mr-2">cloud_download</i>
-                    </a>
-                    <a data-collection="{{@key}}" class="delete-collection clickable">
-                        <i class="material-icons text-danger md-18 mr-2">highlight_off</i>
-                    </a>
-                </div>
-            </td>
-        </tr>
-        {{/each}}
-        {{/each}}
-    </tbody>
-</table>
+<ul class="nav nav-pills mb-3" role="tablist">
+    <li class="nav-item">
+        <a class="nav-link mr-3 active" id="collections-tab" data-toggle="tab" href="#collections" role="tab"
+            aria-controls="collections" aria-selected="true">{{__ "Collections"}}</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="users-tab" data-toggle="tab" href="#users" role="tab" aria-controls="users"
+            aria-selected="false">{{__ "Users"}}</a>
+    </li>
+</ul>
+<div class="tab-content">
+    <div class="tab-pane fade show active" id="collections" role="tabpanel" aria-labelledby="collections-tab">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="border-top-0">{{__ "Name"}}</th>
+                    <th class="border-top-0">{{__ "Storage"}}</th>
+                    <th class="border-top-0">{{__ "Documents"}}</th>
+                    <th class="border-top-0 text-center w-75px">
+                        <a href="#create-collection-modal" data-toggle="modal"
+                            class="d-inline-flex align-items-center text-muted text-decoration-none clickable">
+                            <i class="material-icons md-18 mr-2 text-primary">add_circle_outline</i>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each db_stats}}
+                {{#each this}}
+                <tr>
+                    <td>
+                        <div class="d-inline-flex align-items-center">
+                            <i class="material-icons text-muted md-18 mr-2">grid_on</i>
+                            <a href="{{app_context}}/app/{{@../key}}/{{@key}}/view">{{@key}}</a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="d-inline-flex align-items-center">
+                            <i class="material-icons text-muted md-18 mr-2">data_usage</i>
+                            {{formatBytes this.Storage}}
+                        </div>
+                    </td>
+                    <td>
+                        <div class="d-inline-flex align-items-center">
+                            <i class="material-icons text-muted md-18 mr-2">file_copy</i>
+                            {{this.Documents}}
+                        </div>
+                    </td>
+                    <td>
+                        <div class="d-inline-flex align-items-center">
+                            <a href="{{app_context}}/collection/{{../../db_name}}/{{@key}}/export/false"
+                                class="clickable">
+                                <i class="material-icons text-info md-18 mr-2">cloud_download</i>
+                            </a>
+                            <a data-collection="{{@key}}" class="delete-collection clickable">
+                                <i class="material-icons text-danger md-18 mr-2">highlight_off</i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {{/each}}
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+    <div class="tab-pane fade" id="users" role="tabpanel" aria-labelledby="users-tab">
+        {{#if conn_users}}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="border-top-0">{{__ "Name"}}</th>
+                    <th class="border-top-0 text-center w-75px">
+                        <a href="#create-user" data-toggle="modal"
+                            class="d-inline-flex align-items-center text-muted text-decoration-none clickable">
+                            <i class="material-icons md-18 mr-2 text-primary">add_circle_outline</i>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each conn_users.users}}
+                <tr>
+                    <td>
+                        <div class="d-inline-flex align-items-center">
+                            <i class="material-icons text-muted md-18 mr-2">account_circle</i>
+                            <a href="{{app_context}}/app/{{@../key}}/{{@key}}/view">{{this.user}}</a>
+                        </div>
+                    </td>
+                    <td class="text-center w-75px">
+                        <div class="d-inline-flex align-items-center">
+                            <a data-user="{{this.user}}" class="delete-user clickable">
+                                <i class="material-icons text-danger md-18 mr-2">highlight_off</i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+        {{/if}}
+    </div>
+</div>
 
 <div class="modal fade" id="create-user" tabindex="-1" role="dialog" aria-labelledby="create-user-label">
     <div class="modal-dialog" role="document">
@@ -73,21 +123,7 @@
                     placeholder="{{__ "Confirm"}}"><br />
                 <label for="new_user_roles">{{__ "Roles"}}</label>
                 <input type="text" class="form-control" id="new_user_roles"
-                    placeholder="{{__ "Optional: comma separated user roles"}}"><br />
-                <div class="formBreak"></div>
-                {{#if conn_users}}
-                <label for="del_user_name">{{__ "Delete user"}}</label>
-                <div class="input-group">
-                    <select class="custom-select" id="del_user_name">
-                        {{#each conn_users.users}}
-                        <option>{{this.user}}</option>
-                        {{/each}}
-                    </select>
-                    <span class="input-group-append">
-                        <button class="input-group-text btn btn-danger" id="user_delete">{{__ "Delete"}}</button>
-                    </span>
-                </div>
-                {{/if}}
+                    placeholder="{{__ "Comma separated user roles"}}"><br />
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">{{__ "Close"}}</button>
