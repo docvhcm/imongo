@@ -13,7 +13,6 @@ $(document).ready(function(){
             var urlParts = [];
             urlParts.push($('#app_context').val());
             urlParts.push('document');
-            urlParts.push($('#conn_name').val());
             urlParts.push($('#db_name').val());
             urlParts.push($('#coll_name').val());
             urlParts.push($('#edit_request_type').val());

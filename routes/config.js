@@ -73,7 +73,7 @@ router.post('/config/update_config', function (req, res, next){
         var current_options = nconf.store.connections[req.body.curr_config].connection_options;
 
         // try add the connection
-        connPool.addConnection({connName: req.body.conn_name, connString: req.body.conn_string, connOptions: current_options}, req.app, function (err, data){
+        connPool.addConnection({connName: req.body.db_name, connString: req.body.conn_string, connOptions: current_options}, req.app, function (err, data){
             if(err){
                 console.error('DB Connect error 2: ' + err);
                 res.status(400).json({'msg': req.i18n.__('Config error') + ': ' + err});
@@ -82,7 +82,7 @@ router.post('/config/update_config', function (req, res, next){
                 delete nconf.store.connections[req.body.curr_config];
 
                 // set the new
-                nconf.set('connections:' + req.body.conn_name, {'connection_string': req.body.conn_string, 'connection_options': current_options});
+                nconf.set('connections:' + req.body.db_name, {'connection_string': req.body.conn_string, 'connection_options': current_options});
 
                 // save for ron
                 nconf.save(function (err){
@@ -90,7 +90,7 @@ router.post('/config/update_config', function (req, res, next){
                         console.error('Config error1: ' + err);
                         res.status(400).json({'msg': req.i18n.__('Config error') + ': ' + err});
                     }else{
-                        res.status(200).json({'msg': req.i18n.__('Config successfully updated'), 'name': req.body.conn_name, 'string': req.body.conn_string});
+                        res.status(200).json({'msg': req.i18n.__('Config successfully updated'), 'name': req.body.db_name, 'string': req.body.conn_string});
                     }
                 });
             }

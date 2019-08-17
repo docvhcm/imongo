@@ -158,18 +158,6 @@ $(document).ready(function(){
         }
     });
 
-    // redirect to export
-    $(document).on('click', '#exportModalAction', function(){
-        var exportId = $('#exportExcludeID').is(':checked') ? 'true' : 'false';
-        window.location.href = $('#app_context').val() + '/collection/' + $('#db_name').val() + '/' + $('#export_coll').val() + '/export/' + exportId;
-    });
-
-    // sets the collection name to be used later to export entire collection
-    $(document).on('click', '.exportLink', function(){
-        $('#exportExcludeID').prop('checked', false);
-        $('#export_coll').val($(this).attr('id'));
-    });
-
     // when docs per page is changed
     $(document).on('change', '#docsPerPage', function(){
         localStorage.setItem('docsPerPage', $('#docsPerPage').val());
@@ -260,12 +248,14 @@ $(document).ready(function(){
         }
     });
 
-    $(document).on('click', '#coll_delete', function(){
+    $(document).on('click', '.delete-collection', function(){
+        var $this = $(this);
         if(confirm('WARNING: Are you sure you want to delete this collection and all documents?') === true){
+            var collection = $this.data('collection');
             $.ajax({
                 method: 'POST',
                 url: $('#app_context').val() + '/collection/' + $('#db_name').val() + '/coll_delete',
-                data: {'collection_name': $('#del_coll_name option:selected').text()}
+                data: {'collection_name': collection}
             })
             .done(function(data){
                 $("#del_coll_name option:contains('" + data.coll_name + "')").remove();

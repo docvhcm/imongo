@@ -58,8 +58,8 @@
                         <input type="text" class="search form-control" placeholder="Tìm kiếm..."
                             aria-label="Recipient's username" aria-describedby="basic-addon2">
                         <div class="input-group-append">
-                            <button class="clear input-group-text py-0 my-0">
-                                <i class="material-icons md-18">clear</i>
+                            <button class="clear input-group-text py-0 my-0 clickable">
+                                <i class="material-icons md-18">highlight_off</i>
                             </button>
                         </div>
                     </div>
@@ -197,7 +197,6 @@
     <input type="hidden" value="{{paginate}}" id="to_paginate">
     <input type="hidden" value="{{app_context}}" id="app_context">
     <input type="hidden" value="{{doc_id}}" id="doc_id">
-    <input type="hidden" id="export_coll">
     <input type="hidden" id="edit_request_type" value="insert_doc">
     <div id="mobile-indicator"></div>
     <!-- Collection Name Modal -->
@@ -223,7 +222,7 @@
     <!-- Collection Name Modal -->
     <!-- Search documents Modal -->
     <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="documentSearchLabel">
-        <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="collectionNameLabel">{{__ "Search for documents"}}</h5>
@@ -252,7 +251,7 @@
     <!-- Search documents Modal -->
     <!-- Query Modal -->
     <div class="modal fade" id="queryDocuments" tabindex="-1" role="dialog" aria-labelledby="queryDocumentsLabel">
-        <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="queryDocumentsLabel">{{__ "Query Documents"}}</h5>
@@ -274,7 +273,7 @@
     </div>
     <!-- New document Modal -->
     <div class="modal fade" id="newDocument" tabindex="-1" role="dialog" aria-labelledby="newDocumentLabel">
-        <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="newDocumentLabel">{{__ "New Document"}}</h5>
@@ -290,37 +289,9 @@
             </div>
         </div>
     </div>
-    <!-- Query Modal -->
-    <!-- Export collection Modal -->
-    <div class="modal fade" id="exportModal" tabindex="-1" role="dialog" aria-labelledby="exportCollectionLabel">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="collectionNameLabel">{{__ "Export collection"}}</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <i class="material-icons md-18">close</i>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <div class="checkbox">
-                            <label>
-                                <input id="exportExcludeID" type="checkbox"> {{__ "Exclude"}} "_id"
-                                {{__ "field"}}?
-                            </label>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">{{__ "Close"}}</button>
-                    <button type="button" class="btn btn-primary" id="exportModalAction">{{__ "Export"}}</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <div class="modal fade" id="add-connection" tabindex="-1" role="dialog" aria-labelledby="add-connection-label">
-        <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="add-connection-label">

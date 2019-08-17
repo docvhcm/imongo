@@ -54,6 +54,11 @@
     user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;
+    opacity: .75;
+}
+
+.clickable:focus, .clickable:hover {
+  opacity: 1;
 }
 
 .code-block .json, .code-block pre, .code-block .nav {
@@ -84,6 +89,10 @@
 
 .json-editor {
   min-height: 100px;
+}
+
+.w-75px {
+  width: 75px;
 }
 
 .form-group .item-addable .btn-add, .form-group .item-addable .btn-remove {

@@ -145,5 +145,7 @@
 	"New Document": "New Document",
 	"Create Index": "Create Index",
 	"Create index": "Create index",
-	"Test": "Test"
+	"Test": "Test",
+	"Create Collection": "Create Collection",
+	"Collection Name": "Collection Name"
 }

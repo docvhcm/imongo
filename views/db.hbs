@@ -1,105 +1,121 @@
-<div class="">
-    <h4>{{__ "Collections"}}</h4>
-    <div id="collection_chart"></div>
-    <ul class="list-group list-group-flush">
+<h3 class="lead">{{__ "Collections"}}</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th class="border-top-0">{{__ "Name"}}</th>
+            <th class="border-top-0">{{__ "Storage"}}</th>
+            <th class="border-top-0">{{__ "Documents"}}</th>
+            <th class="border-top-0 text-center w-75px">
+                <a href="#create-collection-modal" data-toggle="modal"
+                    class="d-inline-flex align-items-center text-muted text-decoration-none clickable">
+                    <i class="material-icons md-18 mr-2 text-primary">add_circle_outline</i>
+                </a>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
         {{#each db_stats}}
         {{#each this}}
-        <li class="list-group-item px-0">
-            <div class="row">
-                <div class='col-lg-3 col-sm-12 text-nowrap text-muted d-flex align-items-center'>
-                    <i class="material-icons md-18 mr-2">grid_on</i>
+        <tr>
+            <td>
+                <div class="d-inline-flex align-items-center">
+                    <i class="material-icons text-muted md-18 mr-2">grid_on</i>
                     <a href="{{app_context}}/app/{{@../key}}/{{@key}}/view">{{@key}}</a>
                 </div>
-                <div class='col-lg-3 col-sm-4 text-nowrap  text-muted d-flex align-items-center'>
-                    <i class="material-icons md-18 mr-2">data_usage</i>
-                    {{__ "Storage"}}: {{formatBytes this.Storage}}
+            </td>
+            <td>
+                <div class="d-inline-flex align-items-center">
+                    <i class="material-icons text-muted md-18 mr-2">data_usage</i>
+                    {{formatBytes this.Storage}}
                 </div>
-                <div class='col-lg-3 col-sm-4 text-nowrap text-muted d-flex align-items-center'>
-                    <i class="material-icons md-18 mr-2">file_copy</i>
-                    {{__ "Documents"}}: {{this.Documents}}
+            </td>
+            <td>
+                <div class="d-inline-flex align-items-center">
+                    <i class="material-icons text-muted md-18 mr-2">file_copy</i>
+                    {{this.Documents}}
                 </div>
-                <div class='col-lg-3 col-sm-4 text-nowrap text-muted d-flex align-items-center'>
-                    <i class="material-icons md-18 mr-2">cloud_download</i>
-                    <a href="#" id="{{@key}}" class="" data-toggle="modal" data-target="#exportModal">
-                        {{__ "Export"}}
+            </td>
+            <td>
+                <div class="d-inline-flex align-items-center">
+                    <a href="{{app_context}}/collection/{{../../db_name}}/{{@key}}/export/false" class="clickable">
+                        <i class="material-icons text-info md-18 mr-2">cloud_download</i>
+                    </a>
+                    <a data-collection="{{@key}}" class="delete-collection clickable">
+                        <i class="material-icons text-danger md-18 mr-2">highlight_off</i>
                     </a>
                 </div>
+            </td>
+        </tr>
+        {{/each}}
+        {{/each}}
+    </tbody>
+</table>
+
+<div class="modal fade" id="create-user" tabindex="-1" role="dialog" aria-labelledby="create-user-label">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="create-user-label">
+                    {{__ "Create User"}}
+                    (See <a href="https://docs.mongodb.com/manual/reference/connection-string" target="_blank">docs</a>)
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i class="material-icons md-18">close</i>
+                </button>
             </div>
-        </li>
-        {{/each}}
-        {{/each}}
-    </ul>
-    <ul class="list-group">
-        {{#each db_list.databases}}
-        <li class="list-group-item"><strong>{{@key}}</strong>: {{this.name}}</li>
-        {{/each}}
-    </ul>
+            <div class="modal-body">
+                <label for="new_username">{{__ "Username"}}</label>
+                <input type="text" class="form-control" id="new_username" placeholder="{{__ "Username"}}"><br />
+                <label for="new_pasword">{{__ "Password"}}</label>
+                <input type="password" class="form-control" id="new_password" placeholder="{{__ "Password"}}"><br />
+                <label for="new_password_confirm">{{__ "Confirm password"}}</label>
+                <input type="password" class="form-control" id="new_password_confirm"
+                    placeholder="{{__ "Confirm"}}"><br />
+                <label for="new_user_roles">{{__ "Roles"}}</label>
+                <input type="text" class="form-control" id="new_user_roles"
+                    placeholder="{{__ "Optional: comma separated user roles"}}"><br />
+                <div class="formBreak"></div>
+                {{#if conn_users}}
+                <label for="del_user_name">{{__ "Delete user"}}</label>
+                <div class="input-group">
+                    <select class="custom-select" id="del_user_name">
+                        {{#each conn_users.users}}
+                        <option>{{this.user}}</option>
+                        {{/each}}
+                    </select>
+                    <span class="input-group-append">
+                        <button class="input-group-text btn btn-danger" id="user_delete">{{__ "Delete"}}</button>
+                    </span>
+                </div>
+                {{/if}}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">{{__ "Close"}}</button>
+                <button class="btn btn-primary" id="user_create">{{__ "Create"}}</button>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div class="">
-    <h4>{{__ "Collection maintenance"}}</h4>
-    <label for="new_coll_name">{{__ "Create collection"}}</label>
-    <div class="input-group">
-        <input type="text" class="form-control" id="new_coll_name" placeholder="{{__ "collection Name"}}">
-        <span class="input-group-append">
-            <button class="input-group-text btn btn-primary" id="coll_create">{{__ "Create"}}</button>
-        </span>
-    </div></br>
-    <label for="del_coll_name">{{__ "Delete collection"}}</label>
-    <div class="input-group">
-        <select class="custom-select" id="del_coll_name">
-            {{#each coll_list}}
-            <option>{{this}}</option>
-            {{/each}}
-        </select>
-        <span class="input-group-append">
-            <button class="input-group-text btn btn-danger" id="coll_delete">{{__ "Delete"}}</button>
-        </span>
-    </div>
-
-    <div class="modal fade" id="create-user" tabindex="-1" role="dialog" aria-labelledby="create-user-label">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="create-user-label">
-                        {{__ "Create User"}}
-                        (See <a href="https://docs.mongodb.com/manual/reference/connection-string"
-                            target="_blank">docs</a>)
-                    </h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <i class="material-icons md-18">close</i>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <label for="new_username">{{__ "Username"}}</label>
-                    <input type="text" class="form-control" id="new_username" placeholder="{{__ "Username"}}"><br />
-                    <label for="new_pasword">{{__ "User Password"}}</label>
-                    <input type="password" class="form-control" id="new_password" placeholder="{{__ "Password"}}"><br />
-                    <label for="new_password_confirm">{{__ "Confirm password"}}</label>
-                    <input type="password" class="form-control" id="new_password_confirm"
-                        placeholder="{{__ "Confirm"}}"><br />
-                    <label for="new_user_roles">{{__ "Roles"}}</label>
-                    <input type="text" class="form-control" id="new_user_roles"
-                        placeholder="{{__ "Optional: comma separated user roles"}}"><br />
-                    <div class="formBreak"></div>
-                    {{#if conn_users}}
-                    <label for="del_user_name">{{__ "Delete user"}}</label>
-                    <div class="input-group">
-                        <select class="custom-select" id="del_user_name">
-                            {{#each conn_users.users}}
-                            <option>{{this.user}}</option>
-                            {{/each}}
-                        </select>
-                        <span class="input-group-append">
-                            <button class="input-group-text btn btn-danger" id="user_delete">{{__ "Delete"}}</button>
-                        </span>
-                    </div>
-                    {{/if}}
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">{{__ "Close"}}</button>
-                    <button class="btn btn-primary" id="user_create">{{__ "Create user"}}</button>
-                </div>
+<div class="modal fade" id="create-collection-modal" tabindex="-1" role="dialog"
+    aria-labelledby="create-collection-label">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="create-collection-label">
+                    {{__ "Create Collection"}}
+                    (See <a href="https://docs.mongodb.com/manual/reference/connection-string" target="_blank">docs</a>)
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i class="material-icons md-18">close</i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="text" class="form-control" id="new_coll_name" placeholder="{{__ "Collection Name"}}">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">{{__ "Close"}}</button>
+                <button class="btn btn-primary" id="coll_create">{{__ "Create"}}</button>
             </div>
         </div>
     </div>

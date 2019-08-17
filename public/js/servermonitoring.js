@@ -10,7 +10,7 @@ $(document).ready(function (){
     function renderCharts(){
         $.ajax({
             method: 'GET',
-            url: $('#app_context').val() + '/api/monitoring/' + $('#conn_name').val(),
+            url: $('#app_context').val() + '/api/monitoring/' + $('#db_name').val(),
             data: {}
         })
             .done(function (result){
