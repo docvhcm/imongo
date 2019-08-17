@@ -118,7 +118,7 @@ if(process.env.CONN_NAME && process.env.DB_HOST) {
         connectionString += process.env.DB_USERNAME + ':' + process.env.DB_PASSWORD + '@' + process.env.DB_HOST + ':' + process.env.DB_PORT + '/' + process.env.DB_NAME;
     }else if (process.env.DB_USERNAME && process.env.DB_PASSWORD) {
         connectionString += process.env.DB_USERNAME + ':' + process.env.DB_PASSWORD + '@' + process.env.DB_HOST + ':' + process.env.DB_PORT + '/'
-    } else {    
+    } else {
         connectionString += process.env.DB_HOST + ':' + process.env.DB_PORT
     }
     configConnection.connections[process.env.CONN_NAME] = {
@@ -262,18 +262,18 @@ app.on('uncaughtException', function(err){
 });
 
 // add the connections to the connection pool
-var connection_list = nconf.stores.connections.get('connections');
+var connections = nconf.stores.connections.get('connections');
 var connPool = require('./connections');
 var monitoring = require('./monitoring');
 app.locals.dbConnections = null;
 
-async.forEachOf(connection_list, function (value, key, callback){
+async.forEachOf(connections, function (value, key, callback){
     var MongoURI = require('mongo-uri');
 
     try{
         MongoURI.parse(value.connection_string);
         connPool.addConnection({connName: key, connString: value.connection_string, connOptions: value.connection_options}, app, function (err, data){
-            if(err)delete connection_list[key];
+            if(err)delete connections[key];
             callback();
         });
     }catch(err){

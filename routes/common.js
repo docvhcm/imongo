@@ -262,18 +262,18 @@ exports.order_array = function(array){
 
 // render the error page
 exports.render_error = function(res, req, err, conn){
-    var connection_list = req.nconf.connections.get('connections');
+    var connections = req.nconf.connections.get('connections');
 
     var conn_string = '';
-    if(connection_list[conn] !== undefined){
-        conn_string = connection_list[conn].connection_string;
+    if(connections[conn] !== undefined){
+        conn_string = connections[conn].connection_string;
     }
 
     res.render('error', {
         message: err,
         conn: conn,
         conn_string: conn_string,
-        connection_list: exports.order_object(connection_list),
+        connections: exports.order_object(connections),
         helpers: req.handlebars.helpers
     });
 };

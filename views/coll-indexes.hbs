@@ -1,46 +1,75 @@
-<ol class="breadcrumb">
+{{!-- <ol class="breadcrumb">
     <li><a href="{{app_context}}/app">{{__ "Home"}}</a></li>
     <li><a href="{{app_context}}/app/{{conn_name}}">{{conn_name}}</a>&nbsp;({{__ "connection"}})</li>
     <li><a href="{{app_context}}/app/{{conn_name}}/{{db_name}}">{{db_name}}</a>&nbsp;({{__ "database"}})</li>
     <li><a href="{{app_context}}/app/{{conn_name}}/{{db_name}}/{{coll_name}}/view">{{coll_name}}</a>&nbsp;({{__ "collection"}})</li>
-</ol>
-<div class="col-lg-12">
-    <a href="{{app_context}}/app/{{conn_name}}/{{db_name}}/{{coll_name}}/view" class="btn btn-warning btn-sm pull-left action_button">{{__ "Back"}}</a>
-    <button class="btn btn-success btn-sm pull-right action_button" id="coll_addindex">{{__ "Add index"}}</button>
-</div>
-<div class="col-lg-10">
-    <div class="index_json" id="json">{}</div>
-</div>
-<div class="col-lg-2">
-    <div class="text-center">
-        <h4>{{__ "Options"}}</h4>
-        <div class="checkbox">
-            <label>
-                <input type="checkbox" id="index_unique" checked> {{__ "Unique"}}?
-            </label>
-        </div>
-        <div class="checkbox">
-            <label>
-                <input type="checkbox" id="index_sparse" checked> {{__ "Sparse"}}?
-            </label>
+</ol> --}}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th class="border-top-0">{{__ "Name"}}</th>
+            <th class="border-top-0">{{__ "Key"}}</th>
+            <th class="border-top-0">{{__ "Unique"}}</th>
+            <th class="border-top-0">{{__ "Sparse"}}</th>
+            <th class="border-top-0">
+                <a href="#createIndexModal" data-toggle="modal"
+                    class="d-inline-flex align-items-center text-muted text-decoration-none">
+                    <i class="material-icons md-18 mr-2 text-muted">add_circle_outline</i>
+                </a>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each coll_indexes}}
+        <tr id="index_row_{{@index}}">
+            <td>{{this.name}}</td>
+            <td>{{{toJSON this.key}}}</td>
+            <td>{{niceBool this.unique}}</td>
+            <td>{{niceBool this.sparse}}</td>
+            <td>
+                <div class="d-inline-flex align-items-center">
+                    <a href="#{{@index}}"
+                        class="drop-index d-inline-flex align-items-center text-muted text-decoration-none">
+                        <i class="material-icons md-18 text-danger">highlight_off</i>
+                    </a>
+                </div>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+
+<!-- Query Modal -->
+<!-- Export collection Modal -->
+<div class="modal fade" id="createIndexModal" tabindex="-1" role="dialog" aria-labelledby="createIndexModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createIndexModalLabel">{{__ "Create Index"}}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i class="material-icons md-18">close</i>
+                </button>
+            </div>
+            <div class="index_json json-editor" id="json">{}</div>
+            <div class="modal-body">
+                <div class="form-check form-check-inline">
+                    <div class="custom-control custom-switch">
+                        <input type="checkbox" id="index_unique" class="custom-control-input clickable" checked>
+                        <label class="custom-control-label" for="index_unique">{{__ "Unique"}}</label>
+                    </div>
+                </div>
+                <div class="form-check form-check-inline">
+                    <div class="custom-control custom-switch">
+                        <input type="checkbox" id="index_sparse" class="custom-control-input clickable" checked>
+                        <label class="custom-control-label" for="index_sparse">{{__ "Sparse"}}</label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">{{__ "Close"}}</button>
+                <button class="btn btn-primary action_button" id="coll_addindex">{{__ "Create"}}</button>
+            </div>
         </div>
     </div>
-</div>
-<div class="col-lg-12">
-    <table class="table table-bordered index-table">
-        <th>{{__ "Name"}}</th>
-        <th>{{__ "Key"}}</th>
-        <th>{{__ "Unique"}}</th>
-        <th>{{__ "Sparse"}}</th>
-        <th>{{__ "Action"}}</th>
-        {{#each coll_indexes}}
-            <tr id="index_row_{{@index}}">
-                <td>{{this.name}}</td>
-                <td>{{{toJSON this.key}}}</td>
-                <td>{{niceBool this.unique}}</td>
-                <td>{{niceBool this.sparse}}</td>
-                <td><button class="btn btn-danger btn-sm" onclick="dropIndex('{{@index}}');">{{__ "Delete index"}}</button></td>
-            </tr>
-        {{/each}}
-    </table>
 </div>

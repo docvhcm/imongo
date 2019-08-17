@@ -11,10 +11,10 @@ router.all('/db/*', common.checkLogin, function (req, res, next){
 
 // create a new database
 router.post('/database/:conn/db_create', function (req, res, next){
-    var connection_list = req.app.locals.dbConnections;
+    var connections = req.app.locals.dbConnections;
 
     // Check for existance of connection
-    if(connection_list[req.params.conn] === undefined){
+    if(connections[req.params.conn] === undefined){
         res.status(400).json({'msg': req.i18n.__('Invalid connection')});
         return;
     }
@@ -26,7 +26,7 @@ router.post('/database/:conn/db_create', function (req, res, next){
     }
 
     // Get DB form pool
-    var mongo_db = connection_list[req.params.conn].native.db(req.body.db_name);
+    var mongo_db = connections[req.params.conn].native.db(req.body.db_name);
 
     // adding a new collection to create the DB
     mongo_db.collection('test').save({}, function (err, docs){
@@ -41,15 +41,15 @@ router.post('/database/:conn/db_create', function (req, res, next){
 
 // delete a database
 router.post('/database/:conn/db_delete', function (req, res, next){
-    var connection_list = req.app.locals.dbConnections;
+    var connections = req.app.locals.dbConnections;
 
     // Check for existance of connection
-    if(connection_list[req.params.conn] === undefined){
+    if(connections[req.params.conn] === undefined){
         res.status(400).json({'msg': req.i18n.__('Invalid connection')});
     }
 
     // Get DB form pool
-    var mongo_db = connection_list[req.params.conn].native.db(req.body.db_name);
+    var mongo_db = connections[req.params.conn].native.db(req.body.db_name);
 
     // delete a collection
     mongo_db.dropDatabase(function (err, result){
@@ -66,18 +66,18 @@ router.post('/database/:conn/db_delete', function (req, res, next){
 router.post('/database/:conn/:db/db_backup', function (req, res, next){
     var mongodbBackup = require('mongodb-backup');
     var MongoURI = require('mongo-uri');
-    var connection_list = req.app.locals.dbConnections;
+    var connections = req.app.locals.dbConnections;
 
     // Check for existance of connection
-    if(connection_list[req.params.conn] === undefined){
+    if(connections[req.params.conn] === undefined){
         res.status(400).json({'msg': req.i18n.__('Invalid connection')});
     }
 
     // get the URI
-    var conn_uri = MongoURI.parse(connection_list[req.params.conn].connString);
+    var conn_uri = MongoURI.parse(connections[req.params.conn].connString);
     var db_name = req.params.db;
 
-    var uri = connection_list[req.params.conn].connString;
+    var uri = connections[req.params.conn].connString;
 
     // add DB to URI if not present
     if(!conn_uri.database){
@@ -99,22 +99,22 @@ router.post('/database/:conn/:db/db_backup', function (req, res, next){
 router.post('/database/:conn/:db/db_restore', function (req, res, next){
     var MongoURI = require('mongo-uri');
     var mongodbRestore = require('mongodb-restore');
-    var connection_list = req.app.locals.dbConnections;
+    var connections = req.app.locals.dbConnections;
     var dropTarget = false;
     if(req.body.dropTarget === true || req.body.dropTarget === false){
         dropTarget = req.body.dropTarget;
     }
 
     // Check for existance of connection
-    if(connection_list[req.params.conn] === undefined){
+    if(connections[req.params.conn] === undefined){
         res.status(400).json({'msg': req.i18n.__('Invalid connection')});
     }
 
     // get the URI
-    var conn_uri = MongoURI.parse(connection_list[req.params.conn].connString);
+    var conn_uri = MongoURI.parse(connections[req.params.conn].connString);
     var db_name = req.params.db;
 
-    var uri = connection_list['Local'].connString;
+    var uri = connections['Local'].connString;
 
     // add DB to URI if not present
     if(!conn_uri.database){

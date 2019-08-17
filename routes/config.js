@@ -12,11 +12,11 @@ router.post('/config/add_config', function (req, res, next){
     var nconf = req.nconf.connections;
     var MongoURI = require('mongo-uri');
     var connPool = require('../connections');
-    var connection_list = req.nconf.connections.get('connections');
+    var connections = req.nconf.connections.get('connections');
 
     // check if name already exists
-    if(connection_list !== undefined){
-        if(connection_list[req.body[0]] !== undefined){
+    if(connections !== undefined){
+        if(connections[req.body[0]] !== undefined){
             res.status(400).json({'msg': req.i18n.__('Config error: A connection by that name already exists')});
             return;
         }
@@ -36,7 +36,7 @@ router.post('/config/add_config', function (req, res, next){
         // try add the connection
         connPool.addConnection({connName: req.body[0], connString: req.body[1], connOptions: options}, req.app, function (err, data){
             if(err){
-                console.error('DB Connect error: ' + err);
+                console.error('DB Connect error 1: ' + err);
                 res.status(400).json({'msg': req.i18n.__('Config error') + ': ' + err});
             }else{
                 // set the new config
@@ -75,7 +75,7 @@ router.post('/config/update_config', function (req, res, next){
         // try add the connection
         connPool.addConnection({connName: req.body.conn_name, connString: req.body.conn_string, connOptions: current_options}, req.app, function (err, data){
             if(err){
-                console.error('DB Connect error: ' + err);
+                console.error('DB Connect error 2: ' + err);
                 res.status(400).json({'msg': req.i18n.__('Config error') + ': ' + err});
             }else{
                 // delete current config

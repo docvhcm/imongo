@@ -10,11 +10,18 @@ $(document).ready(function(){
         try{
             // convert BSON string to EJSON
             var ejson = toEJSON.serializeString(editor.getValue());
-
+            var urlParts = [];
+            urlParts.push($('#app_context').val());
+            urlParts.push('document');
+            urlParts.push($('#conn_name').val());
+            urlParts.push($('#db_name').val());
+            urlParts.push($('#coll_name').val());
+            urlParts.push($('#edit_request_type').val());
+            var url = urlParts.join('/');
             $.ajax({
                 method: 'POST',
                 contentType: 'application/json',
-                url: $('#app_context').val() + '/document/' + $('#conn_name').val() + '/' + $('#db_name').val() + '/' + $('#coll_name').val() + '/' + $('#edit_request_type').val(),
+                url: url,
                 data: JSON.stringify({'objectData': ejson})
             })
             .done(function(data){
@@ -22,7 +29,7 @@ $(document).ready(function(){
                 if(data.doc_id){
                     setInterval(function(){
                         // remove "new" and replace with "edit" and redirect to edit the doc
-                        window.location = window.location.href.substring(0, window.location.href.length - 3) + 'edit/' + data.doc_id;
+                        //window.location = window.location.href.substring(0, window.location.href.length - 3) + 'edit/' + data.doc_id;
                     }, 2500);
                 }
             })

@@ -1,58 +1,71 @@
-<ol class="breadcrumb">
+{{!-- <ol class="breadcrumb">
     <li><a href="{{app_context}}/app">{{__ "Home"}}</a></li>
     <li><a href="{{app_context}}/app/{{conn_name}}">{{conn_name}}</a>&nbsp;({{__ "connection"}})</li>
     <li><a href="{{app_context}}/app/{{conn_name}}/{{db_name}}">{{db_name}}</a>&nbsp;({{__ "database"}})</li>
     <li><a href="{{app_context}}/app/{{conn_name}}/{{db_name}}/{{coll_name}}/view">{{coll_name}}</a>&nbsp;({{__ "collection"}})</li>
-</ol>
-<div class="row">
-    <div class="col-lg-12">
-        <div class="col-sm-12 col-md-3 col-lg-3 pad-bottom justifiedButtons no-pad-left">
-            <div class="btn-group btn-group-justified" role="group" aria-label="...">
-                <a class="btn btn-success btn-sm" href="{{app_context}}/app/{{conn_name}}/{{db_name}}/{{coll_name}}/new">{{__ "New document"}}</a>
-                <a class="btn btn-info btn-sm" href="{{app_context}}/app/{{conn_name}}/{{db_name}}/{{coll_name}}/indexes">{{__ "Indexes"}}</a>
-            </div>
-        </div>
-        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 justifiedButtons">
-            <div class="btn-group btn-group-justified" role="group" aria-label="...">
-                <a type="button" class="btn btn-warning btn-sm action_button" data-toggle="modal" data-target="#searchModal">{{__ "Search"}}</a>
-                <a type="button" class="btn btn-primary btn-sm" id="btnqueryDocuments" data-toggle="modal" data-target="#queryDocuments">{{__ "Query"}}</a>
-                <a type="button" class="btn btn-danger btn-sm action_button" id="searchReset">{{__ "Reset"}}</a>
-            </div>
-        </div>
-        <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3 text-right">
-            <div class="form-group">
-                <label for="docsPerPage" class="col-sm-6 control-label paginateLabel">Docs per page</label>
-                <div class="col-sm-6">
-                    <select class="form-control input-sm" id="docsPerPage">
-                        <option>5</option>
-                        <option>10</option>
-                        <option>25</option>
-                        <option>50</option>
-                        <option>100</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-        <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2 text-right no-pad-right">
-            <div class="recordCount">
-                <strong>{{__ "Total records"}}:</strong> <span id="recordCount">0</span>
-                <button class="btn btn-sm btn-danger" id="btnMassDelete">Delete all</button>
-            </div>
+</ol> --}}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light p-0 mb-2">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#doc-actions"
+        aria-controls="doc-actions" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="doc-actions">
+        <ul class="navbar-nav mr-auto">
+            <a href="#newDocument" data-toggle="modal" class="nav-link d-inline-flex align-items-center">
+                <i class="material-icons md-18 mr-2">add</i>
+                {{__ "New document"}}
+            </a>
+            {{!-- <a class="nav-link d-inline-flex align-items-center"
+                href="{{app_context}}/app/{{conn_name}}/{{db_name}}/{{coll_name}}/new">
+                <i class="material-icons md-18 mr-2">add</i>
+                {{__ "New document"}}
+            </a> --}}
+            {{!-- <a href="#searchModal" class="nav-link d-inline-flex align-items-center" data-toggle="modal"><i
+                    class="material-icons md-18 mr-2">add</i>{{__ "Search"}}</a> --}}
+            <a href="#queryDocuments" class="nav-link d-inline-flex align-items-center" id="btnqueryDocuments"
+                data-toggle="modal"><i class="material-icons md-18 mr-2">search</i>{{__ "Query"}}</a>
+            <a href="#" class="nav-link d-inline-flex align-items-center" id="searchReset"><i
+                    class="material-icons md-18 mr-2">undo</i>{{__
+                "Reset"}}</a>
+            <a class="nav-link d-inline-flex align-items-center"
+                href="{{app_context}}/app/{{conn_name}}/{{db_name}}/{{coll_name}}/indexes">
+                <i class="material-icons md-18 mr-2">av_timer</i>{{__ "Indexes"}}</a>
+        </ul>
+        <span class="navbar-text mr-3">Docs per page</span>
+        <form class="form-inline">
+            <select class="custom-select mr-3" id="docsPerPage">
+                <option>5</option>
+                <option selected>10</option>
+                <option>25</option>
+                <option>50</option>
+                <option>100</option>
+            </select>
+        </form>
+        <span class="navbar-text mr-3">
+            <strong>{{__ "Total records"}}:</strong> <span id="recordCount">0</span>
+        </span>
+        <form class="form-inline">
+            <button class="btn btn-outline-danger my-2 my-sm-0" id="btnMassDelete">Delete all</button>
+        </form>
+    </div>
+</nav>
+
+<div id="doc_load_placeholder" class="p-4">
+    <div class="d-flex justify-content-center">
+        <div class="spinner-border spinner-border-xs text-primary" style="width:3rem;height:3rem;" role="status">
+            <span class="sr-only">Loading...</span>
         </div>
     </div>
 </div>
-<div class="row">
-    <div class="col-lg-12">
-        <div id="doc_load_placeholder" class="col-lg-12"><h3 class="text-center">{{__ "Finding docs"}} <i class="fa fa-spinner fa-spin"></i></h3></div>
-        <div id="doc_none_found" class="col-lg-12 hidden">
-            <div class="col-lg-12">
-                <h3 class="text-center">{{__ "No documents found"}}</h3>
-            </div>
-        </div>
-        <div id="coll_docs"></div>
-    </div>
+
+<div id="doc_none_found" class="p-3 mt-3" style="display:none">
+    <h4 class="alert alert-warning" role="alert">
+        {{__ "No documents found"}}
+    </h4>
 </div>
-<div class="col-lg-12">
-    <div id="pager" class="text-center pagination-sm"></div>
-</div>
+<div id="coll_docs"></div>
+
+<nav id="pager" class="my-4" aria-label="Page navigation"></nav>
+
 <input type="hidden" id="page_num" value="{{page_num}}">

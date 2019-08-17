@@ -1,0 +1,105 @@
+.material-icons.md-18 {
+  font-size: 18px;
+}
+.material-icons.md-24 {
+  font-size: 24px;
+}
+.material-icons.md-36 {
+  font-size: 36px;
+}
+.material-icons.md-48 {
+  font-size: 48px;
+}
+
+/* Rules for using icons as black on a light background. */
+.material-icons.md-dark {
+  color: rgba(0, 0, 0, 0.54);
+}
+.material-icons.md-dark.md-inactive {
+  color: rgba(0, 0, 0, 0.26);
+}
+
+/* Rules for using icons as white on a dark background. */
+.material-icons.md-light {
+  color: rgba(255, 255, 255, 1);
+}
+.material-icons.md-light.md-inactive {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.icon-input .form-control {
+  border-right: 0;
+  padding-right: 0;
+  outline: none;
+  box-shadow: none;
+  border-color: #ced4da !important;
+}
+
+.icon-input .input-group-text {
+  background: #fff;
+  border-left: 0;
+}
+
+.icon-input .input-group-text:focus {
+  outline: none !important;
+}
+
+#sidebar .list-group-item:hover {
+  background: transparent !important;
+  color: #000;
+}
+
+.clickable {
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+}
+
+.code-block .json, .code-block pre, .code-block .nav {
+    display: none;
+}
+
+.code-block.expanded .json, .code-block.expanded pre {
+    display: block !important;
+    padding: .5rem;
+    background-color: #fffff6 !important;
+}
+
+.code-block.expanded .nav {
+    display: flex !important;
+}
+
+.code-block.expanded .icon-add, .code-block .icon-remove {
+    display: none;
+}
+
+.code-block.expanded .icon-remove, .code-block .icon-add {
+    display: inline-flex
+}
+
+.spinner-border-xs {
+    border-width: 1px !important;
+}
+
+.json-editor {
+  min-height: 100px;
+}
+
+.form-group .item-addable .btn-add, .form-group .item-addable .btn-remove {
+  cursor: pointer;
+}
+
+.form-group .item-addable {
+  margin-top: 1rem;
+}
+
+.form-group .item-addable:first-child {
+  margin-top: 0;
+}
+
+#sidebar .list-group-item.active {
+  color: #fff !important;
+  border-left: 2px solid #007bff !important;
+  background: #007bff !important;
+}

@@ -1,28 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="h-100 bg-light" lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Language" content="en">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="google" content="notranslate" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>adminMongo</title>
-    <link rel='stylesheet' type='text/css' href='{{app_context}}/bootstrap/css/bootstrap.min.css' />
-    <link rel='stylesheet' type='text/css' href='{{app_context}}/css/flatly.bootstrap.min.css' />
+    <title>Admin Mongo</title>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    {{!-- <link rel='stylesheet' type='text/css' href='{{app_context}}/bootstrap/css/bootstrap.min.css' /> --}}
+    {{!-- <link rel='stylesheet' type='text/css' href='{{app_context}}/css/flatly.bootstrap.min.css' /> --}}
     <link rel="stylesheet" type='text/css' href='{{app_context}}/css/highlightjs.github.min.css'>
     <link rel='stylesheet' type='text/css' href='{{app_context}}/css/style.css' />
+    <link rel='stylesheet' type='text/css' href='{{app_context}}/css/istyle.css' />
     <link rel='stylesheet' type='text/css' href='{{app_context}}/font-awesome/css/font-awesome.min.css' />
-    <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
-    <script src="{{app_context}}/jquery/jquery.min.js"></script>
-    <script src="{{app_context}}/bootstrap/js/bootstrap.min.js"></script>
+    <script>if (typeof module === 'object') { window.module = module; module = undefined; }</script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
+
+    {{!-- <script src="{{app_context}}/jquery/jquery.min.js"></script>
+    <script src="{{app_context}}/bootstrap/js/bootstrap.min.js"></script> --}}
     {{#if paginate}}
     <script src="{{app_context}}/js/jquery.bootpag.min.js"></script>
     {{/if}}
-    {{#if editor}}
+    {{!-- {{#if editor}} --}}
     <script src="{{app_context}}/js/ace/ace.js" type="text/javascript" charset="utf-8"></script>
     <script src="{{app_context}}/js/toEJSON.js"></script>
-    <script src="{{app_context}}/js/editor.js"></script>
-    {{/if}}
+    {{!-- <script src="{{app_context}}/js/editor.js"></script> --}}
+    {{!-- {{/if}} --}}
     {{#if monitoring}}
     <script src="{{app_context}}/js/moment.min.js"></script>
     <script src="{{app_context}}/js/chart.min.js"></script>
@@ -32,152 +44,199 @@
     <script src="{{app_context}}/js/highlight.min.js"></script>
     <script>if (window.module) module = window.module;</script>
 </head>
-<body>
+
+<body class="h-100 bg-light">
     <div class="container-fluid wrapper">
-        <div class="row row-offcanvas row-offcanvas-left">
-            {{#if sidebar_list}}
-            <div id="sidebar" class="column no-side-pad hidden-xs col-xs-12 col-sm-3 col-lg-2 sidebar-offcanvas">
-                <div class="row">
-                    <div class="col-lg-12 no-pad-left no-pad-right">
-                        <div class="navTitle"> 
-                            <a href="{{app_context}}/app"><img src="{{app_context}}/static/logo.png">adminMongo</a>
+        <div class="row">
+            {{#unless connections}}
+            <div id="sidebar" class="col-12 col-md-3 col-xl-2 bg-light">
+                <h4 class="text-center text-muted m-0 p-3">
+                    iMongo
+                </h4>
+                <div class="filtable"  data-search="collection-name" data-page="12">
+                    <div class="input-group bg-light icon-input mb-3">
+                        <input type="text" class="search form-control" placeholder="Tìm kiếm..."
+                            aria-label="Recipient's username" aria-describedby="basic-addon2">
+                        <div class="input-group-append">
+                            <button class="clear input-group-text py-0 my-0">
+                                <i class="material-icons md-18">clear</i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="list-group">
+                        {{#if conn_name}}
+                        <div
+                            class="bg-light list-group-item border-0 list-group-item-action d-flex align-items-center dropdown px-0">
+                            <a class="d-flex align-items-center dropdown-toggle text-muted text-decoration-none"
+                                href="#" id="connections-dropdown" role="button" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                                <i class="material-icons md-18 mr-2">power</i>
+                                {{conn_name}}
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="connections-dropdown">
+                                {{#each conn_list}}
+                                <a class="dropdown-item d-flex align-items-center text-muted"
+                                    href="{{app_context}}/app/{{@key}}">
+                                    {{@key}}
+                                </a>
+                                {{/each}}
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item d-flex align-items-center text-muted" data-toggle="modal"
+                                    href="#add-connection">
+                                    <i class="material-icons md-18 mr-2">power</i>
+                                    {{__ "Add Connection"}}
+                                </a>
+                            </div>
+                        </div>
+                        {{else}}
+                        <a class="dropdown-item d-flex align-items-center text-muted" data-toggle="modal"
+                            href="#add-connection">
+                            <i class="material-icons md-18 mr-2">power</i>
+                            {{__ "Add Connection"}}
+                        </a>
+                        {{/if}}
+                        <div class="list">
+                            {{#each sidebar_list}}
+                            {{#each this}}
+                            <a class="bg-light list-group-item border-0 list-group-item-action d-flex align-items-center px-0"
+                                href="{{app_context}}/app/{{@root.conn_name}}/{{@../key}}/{{this}}/view">
+                                <i class="material-icons md-18 mr-2">grid_on</i>
+                                <span class="collection-name">{{this}}</span>
+                            </a>
+                            {{/each}}
+                            {{/each}}
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-lg-12 no-pad-left no-pad-right">
-                        <ul class="list-group">
-                            <li class="list-group-item list-group-item-primary">{{__ "Database Objects"}}</li>
-                            {{#if conn_name}}
-                                <li class="list-group-item"><i class="fa fa-plug"></i>&nbsp;<a href="{{app_context}}/app/{{conn_name}}">{{conn_name}}</a></li>
-                            {{/if}}
-                            {{#each sidebar_list}}
-                                <li class="list-group-item mainMenu"><i class="fa fa-database"></i>&nbsp; <a href="{{app_context}}/app/{{@root.conn_name}}/{{@key}}">{{@key}}</a><div class="pull-right mainMenuToggle"><i class="fa fa-angle-down" aria-hidden="true"></i></div></li>
-                                {{#each this}}
-                                    <li class="list-group-item coll_indent sub-menu">&nbsp;&nbsp;&nbsp;<i class="fa fa-table"></i>&nbsp;&nbsp;&nbsp;<a href="{{app_context}}/app/{{@root.conn_name}}/{{@../key}}/{{this}}/view">{{this}}</a></li>
-                                {{/each}}
-                            {{/each}}
-                        </ul>
-                        <ul class="list-group">
-                            <li class="list-group-item list-group-item-primary">{{__ "Connections"}}</li>
-                            {{#each conn_list}}
-                                <li class="list-group-item"><i class="fa fa-plug"></i>&nbsp;<a href="{{app_context}}/app/{{@key}}">{{@key}}</a></li>
-                            {{/each}}
-                        </ul>
-                    </div>
-                </div>
             </div>
-            {{/if}}
-            {{#ifOr monitoring connection_list}}
-            <div class="col-md-12 col-lg-12" id="main">
+            {{/unless}}
+            {{#if connections}}
+            <div class="col-12 p-0 bg-white" id="main">
             {{else}}
-            <div class="column col-xs-12 col-sm-9 col-lg-10" id="main">
-            {{/ifOr}}
-                <nav class="navbar navbar-default navbar-static-top">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <div class="container-fluid no-pad-left">
-                        {{#ifOr monitoring connection_list}}
-                            <div class="navbar-left no-pad-left no-pad-right">
-                                <div class="navTitle navTitleDark"> 
-                                    <a href="{{app_context}}/app"><img src="{{app_context}}/static/logo.png">adminMongo</a>
+            <div class="col-12 col-md-9 col-xl-10 p-0 bg-white" id="main">
+            {{/if}}
+                <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav mr-auto">
+                            {{#ifOr monitoring connections}}
+                            <li class="nav-item">
+                                <a class="nav-link h3" href="{{app_context}}/app">
+                                    iMongo
+                                </a>
+                            </li>
+                            {{/ifOr}}
+                            {{#unless monitoring}}
+                            <li class="nav-item">
+                                {{#if coll_name}}
+                                <div class="d-flex align-items-center">
+                                    <i class="material-icons md-18 mr-2">grid_on</i>
+                                    <a href="{{app_context}}/app/{{conn_name}}/{{db_name}}/{{coll_name}}"
+                                        id="headCollectionName" class="text-info">{{coll_name}}</a>
+                                    <button type="button" class="btn btn-link p-0 m-0 border-0" data-toggle="modal"
+                                        data-target="#collectioName">
+                                        <i class="material-icons md-18 mx-2">edit</i>
+                                    </button>
                                 </div>
-                            </div>
-                        {{/ifOr}}
-                        {{#ifNotOr monitoring connection_list}}
-                            <div class="navbar-left no-pad-left no-pad-right">
-                                <button type="button" id="sidebarToggle" class="btn btn-success btn-sm pull-left"><i class="fa fa-bars" aria-hidden="true"></i></button>
-                            </div>
-                        {{/ifNotOr}}
-                        <ul class="nav navbar-nav navbar-right">
-                            <div id="navbar" class="navbar-collapse collapse">
-                                <ul class="nav navbar-nav">
-                                    {{#if conn_name}}
-                                        <li><a href="{{app_context}}/app/monitoring/{{conn_name}}"><i class="fa fa-desktop"></i>&nbsp; {{__ "Monitoring"}}</a></li>
-                                    {{/if}}
-                                    <li><a href="{{app_context}}/app/connection_list"><i class="fa fa-plug"></i>&nbsp; {{__ "Connections"}}</a></li>
-                                    {{#if session.loggedIn}}
-                                        <li><a href="{{app_context}}/app/logout"><i class="fa fa-sign-out"></i>&nbsp; {{__ "Logout"}}</a></li>
-                                    {{/if}}
-                                </ul>
-                            </div
+                                {{else}}
+                                {{#if conn_name}}
+                                <span class="text-warning"><i>{{__ "Not selected"}}</i></span>
+                                {{/if}}
+                                {{/if}}
+                            </li>
+                            {{/unless}}
+                        </ul>
+                        <ul class="navbar-nav">
+                            {{#if conn_name}}
+                            <li class="nav-item">
+                                <a class="nav-link d-flex align-items-center"
+                                    href="{{app_context}}/app/monitoring/{{conn_name}}">
+                                    <i class="material-icons md-18 mr-2">desktop_mac</i>
+                                    {{__ "Monitoring"}}
+                                </a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link d-flex align-items-center dropdown-toggle" data-toggle="dropdown"
+                                    href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                                    <i class="material-icons md-18 mr-2">account_circle</i>
+                                    {{__ "Users"}}
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a class="nav-link d-flex align-items-center text-muted"
+                                        href="{{app_context}}/app/logout">
+                                        <i class="material-icons md-18 ml-2 mr-2">group</i>
+                                        {{__ "Users"}}
+                                    </a>
+                                    <a class="nav-link d-flex align-items-center text-muted"
+                                        href="{{app_context}}/app/logout">
+                                        <i class="material-icons md-18 ml-2 mr-2">person_add</i>
+                                        {{__ "Create User"}}
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="nav-link d-flex align-items-center text-muted"
+                                        href="{{app_context}}/app/logout">
+                                        <i class="material-icons md-18 ml-2 mr-2">exit_to_app</i>
+                                        {{__ "Logout"}}
+                                    </a>
+                                </div>
+                            </li>
+                            {{/if}}
                         </ul>
                     </div>
                 </nav>
-                {{#unless monitoring}}
-                    {{#if conn_name}}
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <h3 class="text-center banner-heading">
-                                    {{__ "Database"}}:
-                                    {{#if db_name}}
-                                        <a href="{{app_context}}/app/{{conn_name}}/{{db_name}}">{{db_name}}</a>
-                                    {{else}}
-                                        <span class="text-warning"><i>{{__ "Not selected"}}</i></span>
-                                    {{/if}}
-                                    / {{__ "Collection"}} -
-                                    {{#if coll_name}}
-                                        <span id="headCollectionName" class="text-info">{{coll_name}}</span>
-                                        <button type="button" class="btn btn-success btn-xs" data-toggle="modal" data-target="#collectioName">
-                                            <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-                                        </button>
-                                    {{else}}
-                                        <span class="text-warning"><i>{{__ "Not selected"}}</i></span>
-                                    {{/if}}
-                                </h3>
-                            </div>
-                        </div>
-                    {{/if}}
-                {{/unless}}
-                {{{body}}}
+                <div class="p-4">
+                    {{{body}}}
+                </div>
             </div>
-            <input type="hidden" value="{{coll_count}}" id="coll_count">
-            <input type="hidden" value="{{conn_name}}" id="conn_name">
-            <input type="hidden" value="{{db_name}}" id="db_name">
-            <input type="hidden" value="{{coll_name}}" id="coll_name">
-            <input type="hidden" value="{{docs_per_page}}" id="docs_per_page">
-            <input type="hidden" value="{{paginate}}" id="to_paginate">
-            <input type="hidden" value="{{app_context}}" id="app_context">
-            <input type="hidden" value="{{doc_id}}" id="doc_id">
-            <input type="hidden" id="export_coll"> 
-            <div id="mobile-indicator"></div>                  
         </div>
-        <!-- Collection Name Modal -->
-        <div class="modal fade" id="collectioName" tabindex="-1" role="dialog" aria-labelledby="collectionNameLabel">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
+    </div>
+
+    <input type="hidden" value="{{coll_count}}" id="coll_count">
+    <input type="hidden" value="{{conn_name}}" id="conn_name">
+    <input type="hidden" value="{{db_name}}" id="db_name">
+    <input type="hidden" value="{{coll_name}}" id="coll_name">
+    <input type="hidden" value="{{docs_per_page}}" id="docs_per_page">
+    <input type="hidden" value="{{paginate}}" id="to_paginate">
+    <input type="hidden" value="{{app_context}}" id="app_context">
+    <input type="hidden" value="{{doc_id}}" id="doc_id">
+    <input type="hidden" id="export_coll">
+    <input type="hidden" id="edit_request_type" value="insert_doc">
+    <div id="mobile-indicator"></div>
+    <!-- Collection Name Modal -->
+    <div class="modal fade" id="collectioName" tabindex="-1" role="dialog" aria-labelledby="collectionNameLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="collectionNameLabel">{{__ "Edit Collection name"}}</h4>
+                    <h5 class="modal-title" id="collectionNameLabel">{{__ "Edit Collection name"}}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i class="material-icons md-18">close</i>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <input type="text" class="form-control" id="coll_name_newval" value="{{coll_name}}">
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">{{__ "Close"}}</button>
-                    <button type="button" class="btn btn-success btn-sm" id="coll_name_edit">{{__ "Save changes"}}</button>
-                </div>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">{{__ "Close"}}</button>
+                    <button type="button" class="btn btn-primary" id="coll_name_edit">{{__ "Save changes"}}</button>
                 </div>
             </div>
         </div>
-        <!-- Collection Name Modal -->
-        <!-- Search documents Modal -->
-        <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="documentSearchLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
+    </div>
+    <!-- Collection Name Modal -->
+    <!-- Search documents Modal -->
+    <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="documentSearchLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="collectionNameLabel">{{__ "Search for documents"}}</h4>
-                    <p>{{__ "BSON types are not supported"}}</p>
+                    <h5 class="modal-title" id="collectionNameLabel">{{__ "Search for documents"}}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i class="material-icons md-18">close</i>
+                    </button>
                 </div>
                 <div class="modal-body">
+                    <div class="alert alert-primary" role="alert">{{__ "BSON types are not supported"}}</div>
                     <div class="form-group">
                         <label for="recipient-name" class="control-label">{{__ "Key (Field)"}}:</label>
-                        <select class="form-control" id="search_key_fields"></select>
+                        <select class="custom-select" id="search_key_fields"></select>
                     </div>
                     <div class="form-group">
                         <label for="message-text" class="control-label">{{__ "Value"}}</label>
@@ -185,59 +244,147 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default btn-sm pull-left" data-dismiss="modal">{{__ "Close"}}</button>
-                    <button type="button" class="btn btn-success btn-sm pull-right" id="searchModalAction">{{__ "Search"}}</button>
-                </div>
-                </div>
-            </div>
-        </div>
-        <!-- Search documents Modal -->
-        <!-- Query Modal -->
-        <div class="modal fade" id="queryDocuments" tabindex="-1" role="dialog" aria-labelledby="queryDocumentsLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="collectionNameLabel">{{__ "Query documents"}}</h4>
-                        <p>{{__ "Queries need to be BSON types or Extended JSON formatted"}}</p>
-                    </div>
-                    <div class="modal-body">
-                        <div class="edit_json" id="json">{}</div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default btn-sm pull-left" data-dismiss="modal">{{__ "Close"}}</button>
-                        <button type="button" class="btn btn-success btn-sm pull-right" id="queryDocumentsAction">{{__ "Send query"}}</button>
-                    </div>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">{{__ "Close"}}</button>
+                    <button type="button" class="btn btn-primary" id="searchModalAction">{{__ "Search"}}</button>
                 </div>
             </div>
         </div>
-        <!-- Query Modal -->
-        <!-- Export collection Modal -->
-        <div class="modal fade" id="exportModal" tabindex="-1" role="dialog" aria-labelledby="exportCollectionLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
+    </div>
+    <!-- Search documents Modal -->
+    <!-- Query Modal -->
+    <div class="modal fade" id="queryDocuments" tabindex="-1" role="dialog" aria-labelledby="queryDocumentsLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="collectionNameLabel">{{__ "Export collection"}}</h4>
+                    <h5 class="modal-title" id="queryDocumentsLabel">{{__ "Query Documents"}}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i class="material-icons md-18">close</i>
+                    </button>
+                </div>
+                <div class="edit_json" id="json">{}</div>
+                <div class="modal-body text-muted d-flex align-items-center justify-content-end">
+                    <i class="material-icons md-18 mr-2">help_outline</i>
+                    <span class="font-italic">{{__ "Queries need to be BSON types or Extended JSON formatted"}}</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">{{__ "Close"}}</button>
+                    <button type="button" class="btn btn-primary" id="queryDocumentsAction">{{__ "Send query"}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- New document Modal -->
+    <div class="modal fade" id="newDocument" tabindex="-1" role="dialog" aria-labelledby="newDocumentLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="newDocumentLabel">{{__ "New Document"}}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i class="material-icons md-18">close</i>
+                    </button>
+                </div>
+                <div class="json-editor">{}</div>
+                <div class="modal-footer border-top-0">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">{{__ "Close"}}</button>
+                    <button type="button" class="btn btn-primary" id="newDocumentsAction">{{__ "Add"}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Query Modal -->
+    <!-- Export collection Modal -->
+    <div class="modal fade" id="exportModal" tabindex="-1" role="dialog" aria-labelledby="exportCollectionLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="collectionNameLabel">{{__ "Export collection"}}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i class="material-icons md-18">close</i>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <form>
                         <div class="checkbox">
                             <label>
-                                <input id="exportExcludeID" type="checkbox"> {{__ "Exclude"}} "_id" {{__ "field"}}?
+                                <input id="exportExcludeID" type="checkbox"> {{__ "Exclude"}} "_id"
+                                {{__ "field"}}?
                             </label>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default btn-sm pull-left" data-dismiss="modal">{{__ "Close"}}</button>
-                    <button type="button" class="btn btn-success btn-sm pull-right" id="exportModalAction">{{__ "Export"}}</button>
-                </div>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">{{__ "Close"}}</button>
+                    <button type="button" class="btn btn-primary" id="exportModalAction">{{__ "Export"}}</button>
                 </div>
             </div>
         </div>
-        <!-- Export collection Modal -->
     </div>
-    <div id="notify_message"></div>
-  </body>
+
+    <div class="modal fade" id="add-connection" tabindex="-1" role="dialog" aria-labelledby="add-connection-label">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="add-connection-label">
+                        {{__ "Add Connection"}}
+                        (See <a href="https://docs.mongodb.com/manual/reference/connection-string"
+                            target="_blank">docs</a>)
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i class="material-icons md-18">close</i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="new_conf_conn_db"><strong>{{__ "Database"}}</strong></label>
+                        <input type="text" class="form-control" placeholder="admin" id="new_conf_conn_db" name="new_conf_conn_db">
+                    </div>
+                    <div class="form-group">
+                        <label for="new_conf_conn_host"><strong>{{__ "Host"}}</strong></label>
+                        <div class="input-group item-addable new_conf_conn_host_port">
+                            <input type="text" class="form-control new_conf_conn_host" placeholder="127.0.0.1">
+                            <input type="text" class="form-control new_conf_conn_port"
+                                style="flex: 0 0 75px; width: 75px" placeholder="27017">
+                            <div class="input-group-append btn-remove">
+                                <span class="input-group-text">
+                                    <i class="material-icons md-18">remove</i>
+                                </span>
+                            </div>
+                            <div class="input-group-append btn-add">
+                                <span class="input-group-text">
+                                    <i class="material-icons md-18">add</i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="new_conf_conn_username"><strong>{{__ "User Name"}}</strong></label>
+                        <input type="text" class="form-control" id="new_conf_conn_username"
+                            name="new_conf_conn_username">
+                    </div>
+                    <div class="form-group">
+                        <label for="new_conf_conn_password"><strong>{{__ "Password"}}</strong></label>
+                        <input type="password" class="form-control" id="new_conf_conn_password"
+                            name="new_conf_conn_password">
+                    </div>
+                    <div class="form-group">
+                        <label for="connection_options"><strong>{{__ "Connection options"}}</strong> (See <a
+                                href="https://mongodb.github.io/node-mongodb-native/2.1/reference/connecting/connection-settings/"
+                                target="_blank">docs</a>)</label>
+                        <div class="connection_json json-editor" id="connection_options">{}</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">{{__ "Close"}}</button>
+                    <button type="button" class="btn btn-primary" id="add_config">{{__ "Add"}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export collection Modal -->
+    <div id="notify_messages">
+        <div id="notify_message" role="alert"></div>
+    </div>
+</body>
+
 </html>

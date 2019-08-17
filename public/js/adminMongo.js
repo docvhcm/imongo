@@ -1,4 +1,86 @@
 $(document).ready(function(){
+    // docv
+    $('.filtable').each(function(){
+        var $this = $(this);
+        var valueNames = ($this.data('search') || '').split(',');
+        var list = new window.List($this[0], {
+            valueNames: valueNames
+        });
+        $this.find('.clear').on('click', function(){
+            list.search();
+            $this.find('.search').val('');
+        });
+    });
+    if(window.ace){
+        $('.json-editor').each(function(){
+            var editor = window.ace.edit($(this)[0]);
+            editor.setOptions({
+                maxLines: Infinity
+            });
+            editor.setTheme('ace/theme/github');
+            editor.session.setMode('ace/mode/json');
+            editor.setFontSize(14);
+            editor.getSession().setUseWorker(false);
+            editor.$blockScrolling = Infinity;
+        });
+    }
+    $(document).on('click', '.item-addable .btn-add', function(){
+        var $item = $(this).closest('.item-addable');
+        $item.after($item.clone());
+    });
+    $(document).on('click', '.item-addable .btn-remove', function(){
+        var $item = $(this).closest('.item-addable');
+        if($item.parent().find('.item-addable').length > 1){
+            $item.remove();
+        }
+    });
+    $(document).on('click', '#newDocumentsAction', function(){
+        var $modal = $(this).closest('.modal');
+        var $jsonEditor = $modal.find('.json-editor');
+        var editor = window.ace.edit($jsonEditor[0]);
+        try{
+            // convert BSON string to EJSON
+            var ejson = toEJSON.serializeString(editor.getValue());
+            var urlParts = [];
+            urlParts.push($('#app_context').val());
+            urlParts.push('document');
+            urlParts.push($('#conn_name').val());
+            urlParts.push($('#db_name').val());
+            urlParts.push($('#coll_name').val());
+            urlParts.push($('#edit_request_type').val());
+            var url = urlParts.join('/');
+            $.ajax({
+                method: 'POST',
+                contentType: 'application/json',
+                url: url,
+                data: JSON.stringify({'objectData': ejson})
+            })
+            .done(function(data){
+                show_notification(data.msg, 'success');
+                if(data.doc_id){
+                    setInterval(function(){
+                        // remove "new" and replace with "edit" and redirect to edit the doc
+                        //window.location = window.location.href.substring(0, window.location.href.length - 3) + 'edit/' + data.doc_id;
+                        window.location.reload();
+                    }, 800);
+                }
+            })
+            .fail(function(data){
+                show_notification(data.responseJSON.msg, 'danger');
+            });
+        }catch(err){
+            show_notification(err, 'danger');
+        }
+    });
+    $(document).on('click', '.drop-index', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        var href = $(this).attr('href');
+        if(href.charAt(0) === '#'){
+            dropIndex(Number(href.substr(1)));
+        }
+    });
+    // end docv
     // paginate if value is set
     if($('#to_paginate').val() === 'true'){
         if(localStorage.getItem('message_text')){
@@ -122,12 +204,11 @@ $(document).ready(function(){
             localStorage.setItem('searchQuery', JSON.stringify(qry_obj));
 
             // check if the key_name is "_id"
-            if (key_name == '_id')
-            {
-                var query_string = toEJSON.serializeString('{"_id":ObjectId("' + val + '")}');
+            if(key_name === '_id'){
+                var query_string = window.toEJSON.serializeString('{"_id":ObjectId("' + val + '")}');
                 localStorage.setItem('searchQuery', query_string);
             }
-            
+
             // go to page 1 to remove any issues being on page X from another query/view
             window.location.href = $('#app_context').val() + '/app/' + $('#conn_name').val() + '/' + $('#db_name').val() + '/' + $('#coll_name').val() + '/view/1';
 
@@ -302,18 +383,33 @@ $(document).ready(function(){
     });
 
     $(document).on('click', '#add_config', function(){
-        if($('#new_conf_conn_name').val() !== '' && $('#new_conf_conn_string').val() !== ''){
-            var editor = ace.edit('json');
-            var editor_val = editor.getValue();
+        var db = ($('#new_conf_conn_db').val() || '').trim();
+        var hosts = [];
+        $('.new_conf_conn_host_port').each(function(){
+            var $this = $(this);
+            var host = $this.find('.new_conf_conn_host').val() || '127.0.0.1';
+            var port = $this.find('.new_conf_conn_port').val() || '27017';
+            hosts.push(host + ':' + port);
+        });
+        var username = ($('#new_conf_conn_username').val() || '').trim();
+        var password = ($('#new_conf_conn_password').val() || '').trim();
+        if(db && hosts.length){
+            var conn_string = 'mongodb://';
+            if(username){
+                conn_string += username + ':' + password + '@';
+            }
+            conn_string += hosts.join(',') + '/' + db;
+            var editor = window.ace.edit('json');
+            var options = editor.getValue();
 
-            if(editor_val === ''){
-                editor_val = {};
+            if(options === ''){
+                options = {};
             }
 
             var data_obj = {};
-            data_obj[0] = $('#new_conf_conn_name').val();
-            data_obj[1] = $('#new_conf_conn_string').val();
-            data_obj[2] = editor_val;
+            data_obj[0] = db;
+            data_obj[1] = conn_string;
+            data_obj[2] = options;
 
             $.ajax({
                 method: 'POST',
@@ -379,8 +475,9 @@ $(document).ready(function(){
     });
 
     // redirect to connection
-    $(document).on('click', '.btnConnConnect', function(){
-        window.location.href = $('#app_context').val() + '/app/' + $(this).parents('.conn_id').attr('id');
+    $(document).on('click', '.btnConnConnect', function(e){
+        e.preventDefault();
+        window.location.href = $('#app_context').val() + '/app/' + $(this).data('connection');
     });
 });
 
@@ -422,9 +519,9 @@ function paginate(){
     .done(function(response){
         // show message when none are found
         if(response.data === '' || response.total_docs === 0){
-            $('#doc_none_found').removeClass('hidden');
+            $('#doc_none_found').show();
         }else{
-            $('#doc_none_found').addClass('hidden');
+            $('#doc_none_found').hide();
         }
 
         var total_docs = Math.ceil(response.total_docs / page_len);
@@ -442,8 +539,11 @@ function paginate(){
                 page: page_num,
                 maxVisible: 5,
                 href: pager_href,
-                firstLastUse: true
+                firstLastUse: true,
+                wrapClass: 'pagination justify-content-end'
             });
+            $('#pager li').addClass('page-item');
+            $('#pager li > a').addClass('page-link');
         }else{
             $('#pager').hide();
         }
@@ -474,18 +574,29 @@ function paginate(){
         }
 
         // clear the div first
-        $('#coll_docs').empty();
+        var $coll_docs = $('#coll_docs');
+        $coll_docs.empty();
+        var $listGroup = $('<div class="list-group list-group-flush"></div>').appendTo($coll_docs);
         var escaper = $('<div></div>');
         for(var i = 0; i < response.data.length; i++){
-            escaper[0].textContent = JSON.stringify(response.data[i], null, 4);
-            var inner_html = '<div class="col-xs-12 col-md-10 col-lg-10 no-side-pad"><pre class="code-block ' + docClass + '"><i class="fa fa-chevron-down code-block_expand"></i><code class="json">' + escaper[0].innerHTML + '</code></pre></div>';
-            inner_html += '<div class="col-md-2 col-lg-2 pad-bottom no-pad-right justifiedButtons">';
-            inner_html += '<div class="btn-group btn-group-justified justifiedButtons" role="group" aria-label="...">';
-            inner_html += '<a href="#" class="btn btn-danger btn-sm" onclick="deleteDoc(\'' + response.data[i]._id + '\')">' + response.deleteButton + '</a>';
-            inner_html += '<a href="' + $('#app_context').val() + '/app/' + conn_name + '/' + db_name + '/' + coll_name + '/' + response.data[i]._id + '" class="btn btn-info btn-sm">' + response.linkButton + '</a>';
-            inner_html += '<a href="' + $('#app_context').val() + '/app/' + conn_name + '/' + db_name + '/' + coll_name + '/edit/' + response.data[i]._id + '" class="btn btn-success btn-sm">' + response.editButton + '</a>';
-            inner_html += '</div></div>';
-            $('#coll_docs').append(inner_html);
+            var doc = response.data[i];
+            var _id = doc['_id'];
+            escaper[0].textContent = JSON.stringify(doc, null, 4);
+            var $listGroupItem = $('<div class="list-group-item code-block"></div>').addClass(docClass).appendTo($listGroup);
+            var $listGroupItemLink = $('<a class="clickable code-block_expand d-flex align-items-center"></a>').appendTo($listGroupItem);
+            $('<i class="icon-add material-icons md-18 ml-2 mr-3">add</i>').appendTo($listGroupItemLink);
+            $('<i class="icon-remove material-icons md-18 ml-2 mr-3">remove</i>').appendTo($listGroupItemLink);
+            $listGroupItemLink.append(_id);
+            var $pre = $('<pre class="mt-2">').appendTo($listGroupItem);
+            var $code = $('<code class="json">').html(escaper[0].innerHTML).appendTo($pre);
+            var $nav = $('<nav class="nav justify-content-end">').appendTo($listGroupItem);
+            $('<a class="nav-link" href="#">').attr('onclick', 'deleteDoc(\'' + _id + '\')').text(response.deleteButton).appendTo($nav);
+            $('<a class="nav-link">').attr('href', $('#app_context').val() + '/app/' + conn_name + '/' + db_name + '/' + coll_name + '/' + _id).text(response.linkButton).appendTo($nav);
+            $('<a class="nav-link">').attr('href', $('#app_context').val() + '/app/' + conn_name + '/' + db_name + '/' + coll_name + '/edit/' + _id).text(response.editButton).appendTo($nav);
+            if(window.hljs){
+                console.log('do highlight');
+                window.hljs.highlightBlock($code[0]);
+            }
         };
         // Bind the DropDown Select For Fields
         var option = '';
@@ -542,10 +653,10 @@ $(document).on('click', '#btnMassDelete', function(){
 
     // get the query (if any)
     if(doc_id){
-        query_string = toEJSON.serializeString('{"_id":ObjectId("' + doc_id + '")}');
+        query_string = window.toEJSON.serializeString('{"_id":ObjectId("' + doc_id + '")}');
     }else{
         var local_query_string = localStorage.getItem('searchQuery');
-        query_string = toEJSON.serializeString(local_query_string);
+        query_string = window.toEJSON.serializeString(local_query_string);
     }
 
     // set the default confirm text
@@ -652,13 +763,14 @@ function show_notification(msg, type, reload_page, timeout){
     // defaults to false
     reload_page = reload_page || false;
     timeout = timeout || 3000;
-
-    $('#notify_message').removeClass();
-    $('#notify_message').addClass('notify_message-' + type);
-    $('#notify_message').html(msg);
-    $('#notify_message').slideDown(600).delay(timeout).slideUp(600, function(){
+    var $alert = $('<div class="alert -slideInRight" role="alert"></div>');
+    $alert.addClass('alert-' + type);
+    $alert.text(msg);
+    $alert.appendTo($('#notify_messages'));
+    setTimeout(function(){
+        $alert.remove();
         if(reload_page === true){
             location.reload();
         }
-    });
+    }, 3000);
 }

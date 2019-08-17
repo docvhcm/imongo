@@ -10,11 +10,11 @@ router.all('/document/*', common.checkLogin, function (req, res, next){
 
 // Inserts a new document
 router.post('/document/:conn/:db/:coll/insert_doc', function (req, res, next){
-    var connection_list = req.app.locals.dbConnections;
+    var connections = req.app.locals.dbConnections;
     var ejson = require('mongodb-extended-json');
 
     // Check for existance of connection
-    if(connection_list[req.params.conn] === undefined){
+    if(connections[req.params.conn] === undefined){
         res.status(400).json({'msg': req.i18n.__('Invalid connection name')});
     }
 
@@ -24,7 +24,7 @@ router.post('/document/:conn/:db/:coll/insert_doc', function (req, res, next){
     }
 
     // Get DB form pool
-    var mongo_db = connection_list[req.params.conn].native.db(req.params.db);
+    var mongo_db = connections[req.params.conn].native.db(req.params.db);
 
     try{
         var eJsonData = ejson.parse(req.body.objectData);
@@ -68,11 +68,11 @@ router.post('/document/:conn/:db/:coll/insert_doc', function (req, res, next){
 
 // Edits/updates an existing document
 router.post('/document/:conn/:db/:coll/edit_doc', function (req, res, next){
-    var connection_list = req.app.locals.dbConnections;
+    var connections = req.app.locals.dbConnections;
     var ejson = require('mongodb-extended-json');
 
     // Check for existance of connection
-    if(connection_list[req.params.conn] === undefined){
+    if(connections[req.params.conn] === undefined){
         res.status(400).json({'msg': req.i18n.__('Invalid connection name')});
     }
 
@@ -82,7 +82,7 @@ router.post('/document/:conn/:db/:coll/edit_doc', function (req, res, next){
     }
 
     // Get DB's form pool
-    var mongo_db = connection_list[req.params.conn].native.db(req.params.db);
+    var mongo_db = connections[req.params.conn].native.db(req.params.db);
 
     try{
         var eJsonData = ejson.parse(req.body.objectData);
@@ -110,10 +110,10 @@ router.post('/document/:conn/:db/:coll/edit_doc', function (req, res, next){
 // Deletes a document or set of documents based on a query
 router.post('/document/:conn/:db/:coll/mass_delete', function (req, res, next){
     var ejson = require('mongodb-extended-json');
-    var connection_list = req.app.locals.dbConnections;
+    var connections = req.app.locals.dbConnections;
 
     // Check for existance of connection
-    if(connection_list[req.params.conn] === undefined){
+    if(connections[req.params.conn] === undefined){
         res.status(400).json({'msg': req.i18n.__('Invalid connection name')});
     }
 
@@ -134,7 +134,7 @@ router.post('/document/:conn/:db/:coll/mass_delete', function (req, res, next){
     }
 
     // Get DB's form pool
-    var mongo_db = connection_list[req.params.conn].native.db(req.params.db);
+    var mongo_db = connections[req.params.conn].native.db(req.params.db);
 
     if(validQuery){
         mongo_db.collection(req.params.coll).remove(query_obj, true, function (err, docs){
@@ -152,10 +152,10 @@ router.post('/document/:conn/:db/:coll/mass_delete', function (req, res, next){
 
 // Deletes a document
 router.post('/document/:conn/:db/:coll/doc_delete', function (req, res, next){
-    var connection_list = req.app.locals.dbConnections;
+    var connections = req.app.locals.dbConnections;
 
     // Check for existance of connection
-    if(connection_list[req.params.conn] === undefined){
+    if(connections[req.params.conn] === undefined){
         res.status(400).json({'msg': req.i18n.__('Invalid connection name')});
     }
 
@@ -165,7 +165,7 @@ router.post('/document/:conn/:db/:coll/doc_delete', function (req, res, next){
     }
 
     // Get DB's form pool
-    var mongo_db = connection_list[req.params.conn].native.db(req.params.db);
+    var mongo_db = connections[req.params.conn].native.db(req.params.db);
     common.get_id_type(mongo_db, req.params.coll, req.body.doc_id, function (err, result){
         if(result.doc){
             mongo_db.collection(req.params.coll).remove({_id: result.doc_id_type}, true, function (err, docs){

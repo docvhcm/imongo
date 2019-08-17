@@ -23,53 +23,53 @@
     <div class="form-group">
         <label for="new_db_name">{{__ "Create new database"}}</label>
         <div class="input-group">
-            <input type="text" class="form-control input-sm" id="new_db_name" placeholder="{{__ "database name"}}">
-            <span class="input-group-btn">
-                <button class="btn btn-success btn-sm" id="db_create">{{__ "Create"}}</button>
-            </span>
+            <input type="text" class="form-control" id="new_db_name" placeholder="{{__ "database name"}}">
+            <div class="input-group-append">
+                <button class="input-group-text btn btn-primary" id="db_create">{{__ "Create"}}</button>
+            </div>
         </div>
     </div>
     <div class="formBreak"></div>
     <label>{{__ "Delete database"}}</label>
     <div class="input-group">
-        <select class="form-control input-sm" id="del_db_name">
+        <select class="custom-select" id="del_db_name">
             {{#each db_list}}
                 <option>{{this}}</option>
             {{/each}}
         </select>
-        <span class="input-group-btn">
-            <button class="btn btn-danger btn-sm" id="db_delete">{{__ "Delete"}}</button>
-        </span>	
+        <span class="input-group-append">
+            <button class="input-group-text btn btn-danger" id="db_delete">{{__ "Delete"}}</button>
+        </span>
     </div>
     <div class="formBreak"></div>
     <h5>Restore database</h5>
     <label>{{__ "Drop target"}}</label>
-    <select class="form-control input-sm" id="restore_db_action">
+    <select class="form-control" id="restore_db_action">
         <option>true</option>
         <option>false</option>
     </select>
     <label>{{__ "Database name"}}</label>
     <div class="input-group">
-        <select class="form-control input-sm" id="restore_db_name">
+        <select class="custom-select" id="restore_db_name">
             {{#each backup_list}}
                 <option>{{this}}</option>
             {{/each}}
         </select>
-        <span class="input-group-btn">
-            <button class="btn btn-danger btn-sm" id="db_restore">{{__ "Restore DB"}}</button>
-        </span>	
+        <span class="input-group-append">
+            <button class="input-group-text btn btn-danger" id="db_restore">{{__ "Restore DB"}}</button>
+        </span>
     </div>
     <div class="formBreak"></div>
     <h5>Backup database</h5>
     <div class="input-group">
-        <select class="form-control input-sm" id="backup_db_name">
+        <select class="custom-select" id="backup_db_name">
             {{#each db_list}}
                 <option>{{this}}</option>
             {{/each}}
         </select>
-        <span class="input-group-btn">
-            <button class="btn btn-success btn-sm" id="db_backup">{{__ "Backup"}}</button>
-        </span>	
+        <span class="input-group-text">
+            <button class="input-group-text btn btn-primary" id="db_backup">{{__ "Backup"}}</button>
+        </span>
     </div>
  </div>
 <div class="col-md-7 col-lg-7">
@@ -77,21 +77,23 @@
     <div id="collection_chart"></div>
     <ul class="list-group">
         {{#each db_stats}}
-            <li class="list-group-item"><i class="fa fa-database"></i>&nbsp;&nbsp; <a href="{{app_context}}/app/{{@root.conn_name}}/{{@key}}">{{@key}}</a></li>
+            <li class="list-group-item">
+                <i class="material-icons md-18 mr-2">storage</i>&nbsp;&nbsp;
+                <a href="{{app_context}}/app/{{@root.conn_name}}/{{@key}}">{{@key}}</a></li>
             {{#each this}}
                 <li class="list-group-item coll_indent">
                     <div class="row">
-                        <div class='col-lg-4 col-sm-12'>
+                        <div class='col-lg-4 col-sm-12 text-nowrap'>
                             <i class="fa fa-table"></i>&nbsp;&nbsp; <a href="{{app_context}}/app/{{@root.conn_name}}/{{@../key}}/{{@key}}/view">{{@key}}</a>
                         </div>
-                        <div class='col-lg-4 col-sm-6'>
+                        <div class='col-lg-4 col-sm-6 text-nowrap'>
                             <i class="fa fa-hdd-o"></i>&nbsp; {{__ "Storage"}}: {{formatBytes this.Storage}}
                         </div>
-                        <div class='col-lg-4 col-sm-6'>
+                        <div class='col-lg-4 col-sm-6 text-nowrap'>
                             <i class="fa fa-file-text-o"></i>&nbsp; {{__ "Documents"}}: {{this.Documents}}
                         </div>
                     </div>
-                </li>   
+                </li>
             {{/each}}
         {{/each}}
     </ul>

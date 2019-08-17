@@ -1,1 +1,12 @@
-{}
+{
+  "connections": {
+    "w3s": {
+      "connection_string": "mongodb://w3s:V1kR324y8HZ5U2-7VKfhXRzp3N_aD1K7@139.162.32.33:27017/w3s",
+      "connection_options": {}
+    },
+    "admin": {
+      "connection_string": "mongodb://root:7xanbxDWhFqAYheCZQVtAunc-5mZPRQSFNY5DBjTduMSyazkY@139.162.32.33:27017/admin",
+      "connection_options": {}
+    }
+  }
+}

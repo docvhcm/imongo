@@ -21,13 +21,13 @@ $(document).ready(function (){
 
                 // show the db data
                 if(result.dataRetrieved === true){
-                    $('#chartsWrapper').removeClass('hidden');
+                    $('#chartsWrapper').removeClass('d-none');
                     $('#monitorPid').text(result.pid);
                     $('#monitorVersion').text(result.version);
                     $('#monitorUptime').text(result.uptime);
                 }else{
                     $('#chartsMessage').html("<p class='text-danger'>There was an error retrieving the monitoring data. Please ensure you are authenticated with a user who has 'admin' role assigned to the server.</p>");
-                    $('#chartsMessage').removeClass('hidden');
+                    $('#chartsMessage').removeClass('d-none');
                 }
 
                 // data
@@ -261,7 +261,7 @@ $(document).ready(function (){
             })
             .fail(function (data){
                 $('#chartsMessage').html("<p class='text-danger'>There was an error retrieving the monitoring data. Please ensure you are authenticated with a user who has 'admin' role assigned to the server.</p>");
-                $('#chartsMessage').removeClass('hidden');
+                $('#chartsMessage').removeClass('d-none');
             });
     }
 

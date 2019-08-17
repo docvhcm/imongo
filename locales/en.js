@@ -130,5 +130,19 @@
 	"Backup": "Backup",
 	"Database successfully backed up": "Database successfully backed up",
 	"Query": "Query",
-	"Indexes": "Indexes"
+	"Indexes": "Indexes",
+	"Databases": "Databases",
+	"Collections": "Collections",
+	"Users": "Users",
+	"Add User": "Add User",
+	"Add Connection": "Add Connection",
+	"Add Collection": "Add Collection",
+	"Host": "Host",
+	"Port": "Port",
+	"User Name": "User Name",
+	"Add": "Add",
+	"Query Documents": "Query Documents",
+	"New Document": "New Document",
+	"Create Index": "Create Index",
+	"Create index": "Create index"
 }
