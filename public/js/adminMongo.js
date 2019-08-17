@@ -44,7 +44,6 @@ $(document).ready(function(){
             var urlParts = [];
             urlParts.push($('#app_context').val());
             urlParts.push('document');
-            urlParts.push($('#conn_name').val());
             urlParts.push($('#db_name').val());
             urlParts.push($('#coll_name').val());
             urlParts.push($('#edit_request_type').val());
@@ -137,7 +136,7 @@ $(document).ready(function(){
     $(document).on('click', '#searchReset', function(){
         if(!$('#searchReset').hasClass('disabled')){
             localStorage.removeItem('searchQuery');
-            window.location.href = $('#app_context').val() + '/app/' + $('#conn_name').val() + '/' + $('#db_name').val() + '/' + $('#coll_name').val() + '/view/1';
+            window.location.href = $('#app_context').val() + '/app/' + $('#db_name').val() + '/' + $('#coll_name').val() + '/view/1';
         }
     });
 
@@ -150,7 +149,7 @@ $(document).ready(function(){
             localStorage.setItem('searchQuery', editor_val);
 
             // go to page 1 to remove any issues being on page X from another query/view
-            window.location.href = $('#app_context').val() + '/app/' + $('#conn_name').val() + '/' + $('#db_name').val() + '/' + $('#coll_name').val() + '/view/1';
+            window.location.href = $('#app_context').val() + '/app/' + $('#db_name').val() + '/' + $('#coll_name').val() + '/view/1';
 
             // close the queryDocuments
             $('#queryDocuments').modal('hide');
@@ -162,7 +161,7 @@ $(document).ready(function(){
     // redirect to export
     $(document).on('click', '#exportModalAction', function(){
         var exportId = $('#exportExcludeID').is(':checked') ? 'true' : 'false';
-        window.location.href = $('#app_context').val() + '/collection/' + $('#conn_name').val() + '/' + $('#db_name').val() + '/' + $('#export_coll').val() + '/export/' + exportId;
+        window.location.href = $('#app_context').val() + '/collection/' + $('#db_name').val() + '/' + $('#export_coll').val() + '/export/' + exportId;
     });
 
     // sets the collection name to be used later to export entire collection
@@ -174,7 +173,7 @@ $(document).ready(function(){
     // when docs per page is changed
     $(document).on('change', '#docsPerPage', function(){
         localStorage.setItem('docsPerPage', $('#docsPerPage').val());
-        window.location = $('#app_context').val() + '/app/' + $('#conn_name').val() + '/' + $('#db_name').val() + '/' + $('#coll_name').val() + '/view/1';
+        window.location = $('#app_context').val() + '/app/' + $('#db_name').val() + '/' + $('#coll_name').val() + '/view/1';
     });
 
     // set the URL search parameters
@@ -210,7 +209,7 @@ $(document).ready(function(){
             }
 
             // go to page 1 to remove any issues being on page X from another query/view
-            window.location.href = $('#app_context').val() + '/app/' + $('#conn_name').val() + '/' + $('#db_name').val() + '/' + $('#coll_name').val() + '/view/1';
+            window.location.href = $('#app_context').val() + '/app/' + $('#db_name').val() + '/' + $('#coll_name').val() + '/view/1';
 
             // close the searchModal
             $('#searchModal').modal('hide');
@@ -224,14 +223,14 @@ $(document).ready(function(){
         if(newCollName !== ''){
             $.ajax({
                 method: 'POST',
-                url: $('#app_context').val() + '/collection/' + $('#conn_name').val() + '/' + $('#db_name').val() + '/' + $('#coll_name').val() + '/coll_name_edit',
+                url: $('#app_context').val() + '/collection/' + $('#db_name').val() + '/' + $('#coll_name').val() + '/coll_name_edit',
                 data: {'new_collection_name': newCollName}
             })
             .done(function(data){
                 $('#headCollectionName').text(newCollName);
                 $('#collectioName').modal('toggle');
                 localStorage.setItem('message_text', data.msg);
-                window.location.href = $('#app_context').val() + '/app/' + $('#conn_name').val() + '/' + $('#db_name').val() + '/' + newCollName + '/view?page=1';
+                window.location.href = $('#app_context').val() + '/app/' + $('#db_name').val() + '/' + newCollName + '/view?page=1';
             })
             .fail(function(data){
                 show_notification(data.responseJSON.msg, 'danger');
@@ -245,7 +244,7 @@ $(document).ready(function(){
         if($('#new_coll_name').val() !== ''){
             $.ajax({
                 method: 'POST',
-                url: $('#app_context').val() + '/collection/' + $('#conn_name').val() + '/' + $('#db_name').val() + '/coll_create',
+                url: $('#app_context').val() + '/collection/' + $('#db_name').val() + '/coll_create',
                 data: {'collection_name': $('#new_coll_name').val()}
             })
             .done(function(data){
@@ -265,7 +264,7 @@ $(document).ready(function(){
         if(confirm('WARNING: Are you sure you want to delete this collection and all documents?') === true){
             $.ajax({
                 method: 'POST',
-                url: $('#app_context').val() + '/collection/' + $('#conn_name').val() + '/' + $('#db_name').val() + '/coll_delete',
+                url: $('#app_context').val() + '/collection/' + $('#db_name').val() + '/coll_delete',
                 data: {'collection_name': $('#del_coll_name option:selected').text()}
             })
             .done(function(data){
@@ -283,7 +282,7 @@ $(document).ready(function(){
         if($('#new_db_name').val() !== ''){
             $.ajax({
                 method: 'POST',
-                url: $('#app_context').val() + '/database/' + $('#conn_name').val() + '/db_create',
+                url: $('#app_context').val() + '/database/' + $('#db_name').val() + '/db_create',
                 data: {'db_name': $('#new_db_name').val()}
             })
             .done(function(data){
@@ -303,7 +302,7 @@ $(document).ready(function(){
         if(confirm('WARNING: Are you sure you want to delete this database and all collections?') === true){
             $.ajax({
                 method: 'POST',
-                url: $('#app_context').val() + '/database/' + $('#conn_name').val() + '/db_delete',
+                url: $('#app_context').val() + '/database/' + $('#db_name').val() + '/db_delete',
                 data: {'db_name': $('#del_db_name option:selected').text()}
             })
             .done(function(data){
@@ -333,7 +332,7 @@ $(document).ready(function(){
 
         $.ajax({
             method: 'POST',
-            url: $('#app_context').val() + '/users/' + $('#conn_name').val() + '/' + $('#db_name').val() + '/user_create',
+            url: $('#app_context').val() + '/users/' + $('#db_name').val() + '/user_create',
             data: {
                 'username': $('#new_username').val(),
                 'user_password': $('#new_password').val(),
@@ -368,7 +367,7 @@ $(document).ready(function(){
         if(confirm('WARNING: Are you sure you want to delete this user?') === true){
             $.ajax({
                 method: 'POST',
-                url: $('#app_context').val() + '/users/' + $('#conn_name').val() + '/' + $('#db_name').val() + '/user_delete',
+                url: $('#app_context').val() + '/users/' + $('#db_name').val() + '/user_delete',
                 data: {'username': $('#del_user_name option:selected').text()}
             })
             .done(function(data){
@@ -383,7 +382,7 @@ $(document).ready(function(){
     });
 
     $(document).on('click', '#add_config', function(){
-        var db = ($('#new_conf_conn_db').val() || '').trim();
+        var db = ($('#new_conf_conn_db').val() || 'admin').trim();
         var hosts = [];
         $('.new_conf_conn_host_port').each(function(){
             var $this = $(this);
@@ -450,30 +449,6 @@ $(document).ready(function(){
         }
     });
 
-    $(document).on('click', '.btnConnUpdate', function(){
-        if($('#conf_conn_name').val() !== '' || $('#conf_conn_string').val() !== ''){
-            var current_name = $(this).parents('.conn_id').attr('id');
-            var new_name = $(this).parents('.connectionRow').find('.conf_conn_name').val();
-            var new_string = $(this).parents('.connectionRow').find('.conf_conn_string').val();
-
-            $.ajax({
-                method: 'POST',
-                url: $('#app_context').val() + '/config/update_config',
-                data: {'curr_config': current_name, 'conn_name': new_name, 'conn_string': new_string}
-            })
-            .done(function(data){
-                $(this).parents('.connectionRow').find('.conf_conn_name').val(data.name);
-                $(this).parents('.connectionRow').find('.conf_conn_string').val(data.string);
-                show_notification(data.msg, 'success', true);
-            })
-            .fail(function(data){
-                show_notification(data.responseJSON.msg, 'danger');
-            });
-        }else{
-            show_notification('Please enter a connection name and connection string', 'danger');
-        }
-    });
-
     // redirect to connection
     $(document).on('click', '.btnConnConnect', function(e){
         e.preventDefault();
@@ -487,7 +462,6 @@ function paginate(){
     var page_num = $('#page_num').val();
     var page_len = $('#docs_per_page').val();
     var coll_name = $('#coll_name').val();
-    var conn_name = $('#conn_name').val();
     var db_name = $('#db_name').val();
     var doc_id = $('#doc_id').val();
 
@@ -507,8 +481,8 @@ function paginate(){
     }
 
     // add search to the API URL if it exists
-    var api_url = $('#app_context').val() + '/api/' + conn_name + '/' + db_name + '/' + coll_name + '/' + page_num;
-    var pager_href = $('#app_context').val() + '/app/' + conn_name + '/' + db_name + '/' + coll_name + '/view/{{number}}';
+    var api_url = $('#app_context').val() + '/api/' + db_name + '/' + coll_name + '/' + page_num;
+    var pager_href = $('#app_context').val() + '/app/' + db_name + '/' + coll_name + '/view/{{number}}';
 
     $.ajax({
         type: 'POST',
@@ -591,8 +565,8 @@ function paginate(){
             var $code = $('<code class="json">').html(escaper[0].innerHTML).appendTo($pre);
             var $nav = $('<nav class="nav justify-content-end">').appendTo($listGroupItem);
             $('<a class="nav-link" href="#">').attr('onclick', 'deleteDoc(\'' + _id + '\')').text(response.deleteButton).appendTo($nav);
-            $('<a class="nav-link">').attr('href', $('#app_context').val() + '/app/' + conn_name + '/' + db_name + '/' + coll_name + '/' + _id).text(response.linkButton).appendTo($nav);
-            $('<a class="nav-link">').attr('href', $('#app_context').val() + '/app/' + conn_name + '/' + db_name + '/' + coll_name + '/edit/' + _id).text(response.editButton).appendTo($nav);
+            $('<a class="nav-link">').attr('href', $('#app_context').val() + '/app/' + db_name + '/' + coll_name + '/' + _id).text(response.linkButton).appendTo($nav);
+            $('<a class="nav-link">').attr('href', $('#app_context').val() + '/app/' + db_name + '/' + coll_name + '/edit/' + _id).text(response.editButton).appendTo($nav);
             if(window.hljs){
                 console.log('do highlight');
                 window.hljs.highlightBlock($code[0]);
@@ -631,7 +605,7 @@ function deleteDoc(doc_id){
     if(confirm('WARNING: Are you sure you want to delete this document?') === true){
         $.ajax({
             method: 'POST',
-            url: $('#app_context').val() + '/document/' + $('#conn_name').val() + '/' + $('#db_name').val() + '/' + $('#coll_name').val() + '/doc_delete',
+            url: $('#app_context').val() + '/document/' + $('#db_name').val() + '/' + $('#coll_name').val() + '/doc_delete',
             data: {'doc_id': doc_id}
         })
         .done(function(data){
@@ -647,7 +621,6 @@ function deleteDoc(doc_id){
 $(document).on('click', '#btnMassDelete', function(){
     var doc_id = $('#doc_id').val();
     var coll_name = $('#coll_name').val();
-    var conn_name = $('#conn_name').val();
     var db_name = $('#db_name').val();
     var query_string;
 
@@ -670,7 +643,7 @@ $(document).on('click', '#btnMassDelete', function(){
     if(confirm(confirmText) === true){
         $.ajax({
             method: 'POST',
-            url: $('#app_context').val() + '/document/' + conn_name + '/' + db_name + '/' + coll_name + '/mass_delete',
+            url: $('#app_context').val() + '/document/' + db_name + '/' + coll_name + '/mass_delete',
             data: {'query': query_string}
         })
         .done(function(data){
@@ -681,40 +654,6 @@ $(document).on('click', '#btnMassDelete', function(){
             show_notification(data.responseJSON.msg, 'danger');
         });
     }
-});
-
-// restore DB
-$(document).on('click', '#db_restore', function(){
-    if($('#restore_db_name').val() !== null){
-        if(confirm('WARNING: Are you absolutely sure you want to restore the "' + $('#restore_db_name').val() + '" database?') === true){
-            $.ajax({
-                method: 'POST',
-                url: $('#app_context').val() + '/database/' + $('#conn_name').val() + '/' + $('#restore_db_name').val() + '/db_restore/',
-                data: {'dropTarget': $('#restore_db_action').val()}
-            })
-            .done(function(data){
-                show_notification(data.msg, 'success', true);
-            })
-            .fail(function(data){
-                show_notification(data.responseJSON.msg, 'danger');
-            });
-        }
-    }
-});
-
-// backup DB
-$(document).on('click', '#db_backup', function(){
-    $.ajax({
-        method: 'POST',
-        url: $('#app_context').val() + '/database/' + $('#conn_name').val() + '/' + $('#backup_db_name').val() + '/db_backup/',
-        data: {}
-    })
-    .done(function(data){
-        show_notification(data.msg, 'success', true);
-    })
-    .fail(function(data){
-        show_notification(data.responseJSON.msg, 'danger');
-    });
 });
 
 $(document).on('click', '#coll_addindex', function(){
@@ -729,7 +668,7 @@ $(document).on('click', '#coll_addindex', function(){
 
         $.ajax({
             method: 'POST',
-            url: $('#app_context').val() + '/collection/' + $('#conn_name').val() + '/' + $('#db_name').val() + '/' + $('#coll_name').val() + '/create_index',
+            url: $('#app_context').val() + '/collection/' + $('#db_name').val() + '/' + $('#coll_name').val() + '/create_index',
             data: data_obj
         })
         .done(function(data){
@@ -746,7 +685,7 @@ $(document).on('click', '#coll_addindex', function(){
 function dropIndex(index_index){
     $.ajax({
         method: 'POST',
-        url: $('#app_context').val() + '/collection/' + $('#conn_name').val() + '/' + $('#db_name').val() + '/' + $('#coll_name').val() + '/drop_index',
+        url: $('#app_context').val() + '/collection/' + $('#db_name').val() + '/' + $('#coll_name').val() + '/drop_index',
         data: {'index': index_index}
     })
     .done(function(data){

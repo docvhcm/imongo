@@ -1,10 +1,3 @@
-{{!-- <ol class="breadcrumb">
-    <li><a href="{{app_context}}/app">{{__ "Home"}}</a></li>
-    <li><a href="{{app_context}}/app/{{conn_name}}">{{conn_name}}</a>&nbsp;({{__ "connection"}})</li>
-    <li><a href="{{app_context}}/app/{{conn_name}}/{{db_name}}">{{db_name}}</a>&nbsp;({{__ "database"}})</li>
-    <li><a href="{{app_context}}/app/{{conn_name}}/{{db_name}}/{{coll_name}}/view">{{coll_name}}</a>&nbsp;({{__ "collection"}})</li>
-</ol> --}}
-
 <nav class="navbar navbar-expand-lg navbar-light bg-light p-0 mb-2">
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#doc-actions"
         aria-controls="doc-actions" aria-expanded="false" aria-label="Toggle navigation">
@@ -16,20 +9,13 @@
                 <i class="material-icons md-18 mr-2">add</i>
                 {{__ "New document"}}
             </a>
-            {{!-- <a class="nav-link d-inline-flex align-items-center"
-                href="{{app_context}}/app/{{conn_name}}/{{db_name}}/{{coll_name}}/new">
-                <i class="material-icons md-18 mr-2">add</i>
-                {{__ "New document"}}
-            </a> --}}
-            {{!-- <a href="#searchModal" class="nav-link d-inline-flex align-items-center" data-toggle="modal"><i
-                    class="material-icons md-18 mr-2">add</i>{{__ "Search"}}</a> --}}
             <a href="#queryDocuments" class="nav-link d-inline-flex align-items-center" id="btnqueryDocuments"
                 data-toggle="modal"><i class="material-icons md-18 mr-2">search</i>{{__ "Query"}}</a>
             <a href="#" class="nav-link d-inline-flex align-items-center" id="searchReset"><i
                     class="material-icons md-18 mr-2">undo</i>{{__
                 "Reset"}}</a>
             <a class="nav-link d-inline-flex align-items-center"
-                href="{{app_context}}/app/{{conn_name}}/{{db_name}}/{{coll_name}}/indexes">
+                href="{{app_context}}/app/{{db_name}}/{{coll_name}}/indexes">
                 <i class="material-icons md-18 mr-2">av_timer</i>{{__ "Indexes"}}</a>
         </ul>
         <span class="navbar-text mr-3">Docs per page</span>

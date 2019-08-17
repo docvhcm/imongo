@@ -3,39 +3,35 @@
     <div id="collection_chart"></div>
     <ul class="list-group list-group-flush">
         {{#each db_stats}}
-            {{!-- <li class="list-group-item">
-                <i class="material-icons md-18 mr-2">storage</i>
-                <a href="{{app_context}}/app/{{@root.conn_name}}/{{@key}}">{{@key}}</a>
-            </li> --}}
-            {{#each this}}
-                <li class="list-group-item px-0">
-                    <div class="row">
-                        <div class='col-lg-3 col-sm-12 text-nowrap text-muted d-flex align-items-center'>
-                            <i class="material-icons md-18 mr-2">grid_on</i>
-                            <a href="{{app_context}}/app/{{@root.conn_name}}/{{@../key}}/{{@key}}/view">{{@key}}</a>
-                        </div>
-                        <div class='col-lg-3 col-sm-4 text-nowrap  text-muted d-flex align-items-center'>
-                            <i class="material-icons md-18 mr-2">data_usage</i>
-                            {{__ "Storage"}}: {{formatBytes this.Storage}}
-                        </div>
-                        <div class='col-lg-3 col-sm-4 text-nowrap text-muted d-flex align-items-center'>
-                            <i class="material-icons md-18 mr-2">file_copy</i>
-                            {{__ "Documents"}}: {{this.Documents}}
-                        </div>
-                        <div class='col-lg-3 col-sm-4 text-nowrap text-muted d-flex align-items-center'>
-                            <i class="material-icons md-18 mr-2">cloud_download</i>
-                            <a href="#" id="{{@key}}" class="" data-toggle="modal" data-target="#exportModal">
-                                {{__ "Export"}}
-                            </a>
-                        </div>
-                    </div>
-                </li>
-            {{/each}}
+        {{#each this}}
+        <li class="list-group-item px-0">
+            <div class="row">
+                <div class='col-lg-3 col-sm-12 text-nowrap text-muted d-flex align-items-center'>
+                    <i class="material-icons md-18 mr-2">grid_on</i>
+                    <a href="{{app_context}}/app/{{@../key}}/{{@key}}/view">{{@key}}</a>
+                </div>
+                <div class='col-lg-3 col-sm-4 text-nowrap  text-muted d-flex align-items-center'>
+                    <i class="material-icons md-18 mr-2">data_usage</i>
+                    {{__ "Storage"}}: {{formatBytes this.Storage}}
+                </div>
+                <div class='col-lg-3 col-sm-4 text-nowrap text-muted d-flex align-items-center'>
+                    <i class="material-icons md-18 mr-2">file_copy</i>
+                    {{__ "Documents"}}: {{this.Documents}}
+                </div>
+                <div class='col-lg-3 col-sm-4 text-nowrap text-muted d-flex align-items-center'>
+                    <i class="material-icons md-18 mr-2">cloud_download</i>
+                    <a href="#" id="{{@key}}" class="" data-toggle="modal" data-target="#exportModal">
+                        {{__ "Export"}}
+                    </a>
+                </div>
+            </div>
+        </li>
+        {{/each}}
         {{/each}}
     </ul>
     <ul class="list-group">
         {{#each db_list.databases}}
-            <li class="list-group-item"><strong>{{@key}}</strong>: {{this.name}}</li>
+        <li class="list-group-item"><strong>{{@key}}</strong>: {{this.name}}</li>
         {{/each}}
     </ul>
 </div>
@@ -53,36 +49,58 @@
     <div class="input-group">
         <select class="custom-select" id="del_coll_name">
             {{#each coll_list}}
-                <option>{{this}}</option>
+            <option>{{this}}</option>
             {{/each}}
         </select>
         <span class="input-group-append">
             <button class="input-group-text btn btn-danger" id="coll_delete">{{__ "Delete"}}</button>
         </span>
     </div>
-    <div class="formBreak"></div>
-    <h4>{{__ "Create User"}}</h4>
-    <label for="new_username">{{__ "Username"}}</label>
-    <input type="text" class="form-control" id="new_username" placeholder="{{__ "Username"}}"><br/>
-    <label for="new_pasword">{{__ "User Password"}}</label>
-    <input type="password" class="form-control" id="new_password" placeholder="{{__ "Password"}}"><br/>
-    <label for="new_password_confirm">{{__ "Confirm password"}}</label>
-    <input type="password" class="form-control" id="new_password_confirm" placeholder="{{__ "Confirm"}}"><br/>
-    <label for="new_user_roles">{{__ "Roles"}}</label>
-    <input type="text" class="form-control" id="new_user_roles" placeholder="{{__ "Optional: comma separated user roles"}}"><br/>
-    <button class="btn btn-primary" id="user_create">{{__ "Create user"}}</button>
-    <div class="formBreak"></div>
-    {{#if conn_users}}
-        <label for="del_user_name">{{__ "Delete user"}}</label>
-        <div class="input-group">
-            <select class="custom-select" id="del_user_name">
-                {{#each conn_users.users}}
-                    <option>{{this.user}}</option>
-                {{/each}}
-            </select>
-            <span class="input-group-append">
-                <button class="input-group-text btn btn-danger" id="user_delete">{{__ "Delete"}}</button>
-            </span>
+
+    <div class="modal fade" id="create-user" tabindex="-1" role="dialog" aria-labelledby="create-user-label">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="create-user-label">
+                        {{__ "Create User"}}
+                        (See <a href="https://docs.mongodb.com/manual/reference/connection-string"
+                            target="_blank">docs</a>)
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i class="material-icons md-18">close</i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <label for="new_username">{{__ "Username"}}</label>
+                    <input type="text" class="form-control" id="new_username" placeholder="{{__ "Username"}}"><br />
+                    <label for="new_pasword">{{__ "User Password"}}</label>
+                    <input type="password" class="form-control" id="new_password" placeholder="{{__ "Password"}}"><br />
+                    <label for="new_password_confirm">{{__ "Confirm password"}}</label>
+                    <input type="password" class="form-control" id="new_password_confirm"
+                        placeholder="{{__ "Confirm"}}"><br />
+                    <label for="new_user_roles">{{__ "Roles"}}</label>
+                    <input type="text" class="form-control" id="new_user_roles"
+                        placeholder="{{__ "Optional: comma separated user roles"}}"><br />
+                    <div class="formBreak"></div>
+                    {{#if conn_users}}
+                    <label for="del_user_name">{{__ "Delete user"}}</label>
+                    <div class="input-group">
+                        <select class="custom-select" id="del_user_name">
+                            {{#each conn_users.users}}
+                            <option>{{this.user}}</option>
+                            {{/each}}
+                        </select>
+                        <span class="input-group-append">
+                            <button class="input-group-text btn btn-danger" id="user_delete">{{__ "Delete"}}</button>
+                        </span>
+                    </div>
+                    {{/if}}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">{{__ "Close"}}</button>
+                    <button class="btn btn-primary" id="user_create">{{__ "Create user"}}</button>
+                </div>
+            </div>
         </div>
-    {{/if}}
+    </div>
 </div>

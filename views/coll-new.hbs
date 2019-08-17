@@ -1,11 +1,4 @@
-{{!-- <ol class="breadcrumb">
-    <li><a href="{{app_context}}/app">{{__ "Home"}}</a></li>
-    <li><a href="{{app_context}}/app/{{conn_name}}">{{conn_name}}</a>&nbsp;({{__ "connection"}})</li>
-    <li><a href="{{app_context}}/app/{{conn_name}}/{{db_name}}">{{db_name}}</a>&nbsp;({{__ "database"}})</li>
-    <li><a href="{{app_context}}/app/{{conn_name}}/{{db_name}}/{{coll_name}}/view">{{coll_name}}</a>&nbsp;({{__ "collection"}})</li>
-</ol> --}}
-
-<a href="{{app_context}}/app/{{conn_name}}/{{db_name}}/{{coll_name}}/view"
+<a href="{{app_context}}/app/{{db_name}}/{{coll_name}}/view"
     class="btn btn-warning action_button">{{__ "Back"}}</a>
 <button class="btn btn-primary action_button" id="submit_json">{{__ "Add document"}}</button>
 <div class="new_json" id="json">{}</div>

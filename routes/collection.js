@@ -9,11 +9,11 @@ router.all('/collection/*', common.checkLogin, function (req, res, next){
 });
 
 // Create a new collection
-router.post('/collection/:conn/:db/coll_create', function (req, res, next){
+router.post('/collection/:db/coll_create', function (req, res, next){
     var connections = req.app.locals.dbConnections;
 
     // Check for existance of connection
-    if(connections[req.params.conn] === undefined){
+    if(connections[req.params.db] === undefined){
         res.status(400).json({'msg': req.i18n.__('Invalid connection')});
         return;
     }
@@ -24,7 +24,7 @@ router.post('/collection/:conn/:db/coll_create', function (req, res, next){
     }
 
     // Get DB form pool
-    var mongo_db = connections[req.params.conn].native.db(req.params.db);
+    var mongo_db = connections[req.params.db].native.db(req.params.db);
 
     // adding a new collection
     mongo_db.createCollection(req.body.collection_name, function (err, coll){
@@ -38,11 +38,11 @@ router.post('/collection/:conn/:db/coll_create', function (req, res, next){
 });
 
 // Rename an existing collection
-router.post('/collection/:conn/:db/:coll/coll_name_edit', function (req, res, next){
+router.post('/collection/:db/:coll/coll_name_edit', function (req, res, next){
     var connections = req.app.locals.dbConnections;
 
     // Check for existance of connection
-    if(connections[req.params.conn] === undefined){
+    if(connections[req.params.db] === undefined){
         res.status(400).json({'msg': req.i18n.__('Invalid connection')});
         return;
     }
@@ -53,7 +53,7 @@ router.post('/collection/:conn/:db/:coll/coll_name_edit', function (req, res, ne
     }
 
     // Get DB form pool
-    var mongo_db = connections[req.params.conn].native.db(req.params.db);
+    var mongo_db = connections[req.params.db].native.db(req.params.db);
 
     // change a collection name
     mongo_db.collection(req.params.coll).rename(req.body.new_collection_name, {'dropTarget': false}, function (err, coll_name){
@@ -67,11 +67,11 @@ router.post('/collection/:conn/:db/:coll/coll_name_edit', function (req, res, ne
 });
 
 // Delete a collection
-router.post('/collection/:conn/:db/coll_delete', function (req, res, next){
+router.post('/collection/:db/coll_delete', function (req, res, next){
     var connections = req.app.locals.dbConnections;
 
     // Check for existance of connection
-    if(connections[req.params.conn] === undefined){
+    if(connections[req.params.db] === undefined){
         res.status(400).json({'msg': req.i18n.__('Invalid connection')});
         return;
     }
@@ -82,7 +82,7 @@ router.post('/collection/:conn/:db/coll_delete', function (req, res, next){
     }
 
     // Get DB form pool
-    var mongo_db = connections[req.params.conn].native.db(req.params.db);
+    var mongo_db = connections[req.params.db].native.db(req.params.db);
 
     // delete a collection
     mongo_db.dropCollection(req.body.collection_name, function (err, coll){
@@ -96,18 +96,18 @@ router.post('/collection/:conn/:db/coll_delete', function (req, res, next){
 });
 
 // Exports a collection
-router.get('/collection/:conn/:db/:coll/export/:excludedID?', function (req, res, next){
+router.get('/collection/:db/:coll/export/:excludedID?', function (req, res, next){
     var connections = req.app.locals.dbConnections;
 
     // Check for existance of connection
-    if(connections[req.params.conn] === undefined){
-        common.render_error(res, req, req.i18n.__('Invalid connection name'), req.params.conn);
+    if(connections[req.params.db] === undefined){
+        common.render_error(res, req, req.i18n.__('Invalid connection name'), req.params.db);
         return;
     }
 
     // Validate database name
     if(req.params.db.indexOf(' ') > -1){
-        common.render_error(res, req, req.i18n.__('Invalid database name'), req.params.conn);
+        common.render_error(res, req, req.i18n.__('Invalid database name'), req.params.db);
         return;
     }
 
@@ -118,24 +118,24 @@ router.get('/collection/:conn/:db/:coll/export/:excludedID?', function (req, res
     }
 
     // Get DB's form pool
-    var mongo_db = connections[req.params.conn].native.db(req.params.db);
+    var mongo_db = connections[req.params.db].native.db(req.params.db);
 
     mongo_db.collection(req.params.coll).find({}, exportID).toArray(function (err, data){
         if(data !== ''){
             res.set({'Content-Disposition': 'attachment; filename=' + req.params.coll + '.json'});
             res.send(JSON.stringify(data, null, 2));
         }else{
-            common.render_error(res, req, req.i18n.__('Export error: Collection not found'), req.params.conn);
+            common.render_error(res, req, req.i18n.__('Export error: Collection not found'), req.params.db);
         }
     });
 });
 
 // Create a new collection index
-router.post('/collection/:conn/:db/:coll/create_index', function (req, res, next){
+router.post('/collection/:db/:coll/create_index', function (req, res, next){
     var connections = req.app.locals.dbConnections;
 
     // Check for existance of connection
-    if(connections[req.params.conn] === undefined){
+    if(connections[req.params.db] === undefined){
         res.status(400).json({'msg': req.i18n.__('Invalid connection')});
         return;
     }
@@ -146,7 +146,7 @@ router.post('/collection/:conn/:db/:coll/create_index', function (req, res, next
     }
 
     // Get DB form pool
-    var mongo_db = connections[req.params.conn].native.db(req.params.db);
+    var mongo_db = connections[req.params.db].native.db(req.params.db);
 
     // adding a new collection
     var unique_bool = (req.body[1] === 'true');
@@ -163,11 +163,11 @@ router.post('/collection/:conn/:db/:coll/create_index', function (req, res, next
 });
 
 // Drops an existing collection index
-router.post('/collection/:conn/:db/:coll/drop_index', function (req, res, next){
+router.post('/collection/:db/:coll/drop_index', function (req, res, next){
     var connections = req.app.locals.dbConnections;
 
     // Check for existance of connection
-    if(connections[req.params.conn] === undefined){
+    if(connections[req.params.db] === undefined){
         res.status(400).json({'msg': req.i18n.__('Invalid connection')});
         return;
     }
@@ -178,7 +178,7 @@ router.post('/collection/:conn/:db/:coll/drop_index', function (req, res, next){
     }
 
     // Get DB form pool
-    var mongo_db = connections[req.params.conn].native.db(req.params.db);
+    var mongo_db = connections[req.params.db].native.db(req.params.db);
 
     // adding a new index
     mongo_db.collection(req.params.coll).indexes(function (err, indexes){

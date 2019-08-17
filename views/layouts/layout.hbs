@@ -64,14 +64,14 @@
                         </div>
                     </div>
                     <div class="list-group">
-                        {{#if conn_name}}
+                        {{#if db_name}}
                         <div
                             class="bg-light list-group-item border-0 list-group-item-action d-flex align-items-center dropdown px-0">
                             <a class="d-flex align-items-center dropdown-toggle text-muted text-decoration-none"
                                 href="#" id="connections-dropdown" role="button" data-toggle="dropdown"
                                 aria-haspopup="true" aria-expanded="false">
                                 <i class="material-icons md-18 mr-2">power</i>
-                                {{conn_name}}
+                                {{db_name}}
                             </a>
                             <div class="dropdown-menu" aria-labelledby="connections-dropdown">
                                 {{#each conn_list}}
@@ -99,7 +99,7 @@
                             {{#each sidebar_list}}
                             {{#each this}}
                             <a class="bg-light list-group-item border-0 list-group-item-action d-flex align-items-center px-0"
-                                href="{{app_context}}/app/{{@root.conn_name}}/{{@../key}}/{{this}}/view">
+                                href="{{app_context}}/app/{{@../key}}/{{this}}/view">
                                 <i class="material-icons md-18 mr-2">grid_on</i>
                                 <span class="collection-name">{{this}}</span>
                             </a>
@@ -130,7 +130,7 @@
                                 {{#if coll_name}}
                                 <div class="d-flex align-items-center">
                                     <i class="material-icons md-18 mr-2">grid_on</i>
-                                    <a href="{{app_context}}/app/{{conn_name}}/{{db_name}}/{{coll_name}}"
+                                    <a href="{{app_context}}/app/{{db_name}}/{{coll_name}}"
                                         id="headCollectionName" class="text-info">{{coll_name}}</a>
                                     <button type="button" class="btn btn-link p-0 m-0 border-0" data-toggle="modal"
                                         data-target="#collectioName">
@@ -138,7 +138,7 @@
                                     </button>
                                 </div>
                                 {{else}}
-                                {{#if conn_name}}
+                                {{#if db_name}}
                                 <span class="text-warning"><i>{{__ "Not selected"}}</i></span>
                                 {{/if}}
                                 {{/if}}
@@ -146,10 +146,10 @@
                             {{/unless}}
                         </ul>
                         <ul class="navbar-nav">
-                            {{#if conn_name}}
+                            {{#if db_name}}
                             <li class="nav-item">
                                 <a class="nav-link d-flex align-items-center"
-                                    href="{{app_context}}/app/monitoring/{{conn_name}}">
+                                    href="{{app_context}}/app/monitoring/{{db_name}}">
                                     <i class="material-icons md-18 mr-2">desktop_mac</i>
                                     {{__ "Monitoring"}}
                                 </a>
@@ -166,7 +166,7 @@
                                         <i class="material-icons md-18 ml-2 mr-2">group</i>
                                         {{__ "Users"}}
                                     </a>
-                                    <a class="nav-link d-flex align-items-center text-muted"
+                                    <a href="#create-user" data-toggle="modal" class="nav-link d-flex align-items-center text-muted"
                                         href="{{app_context}}/app/logout">
                                         <i class="material-icons md-18 ml-2 mr-2">person_add</i>
                                         {{__ "Create User"}}
@@ -191,7 +191,6 @@
     </div>
 
     <input type="hidden" value="{{coll_count}}" id="coll_count">
-    <input type="hidden" value="{{conn_name}}" id="conn_name">
     <input type="hidden" value="{{db_name}}" id="db_name">
     <input type="hidden" value="{{coll_name}}" id="coll_name">
     <input type="hidden" value="{{docs_per_page}}" id="docs_per_page">

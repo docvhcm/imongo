@@ -8,11 +8,11 @@ router.all('/users/*', common.checkLogin, function (req, res, next){
 });
 
 // Creates a new user
-router.post('/users/:conn/:db/user_create', function (req, res, next){
+router.post('/users/:db/user_create', function (req, res, next){
     var connections = req.app.locals.dbConnections;
 
     // Check for existance of connection
-    if(connections[req.params.conn] === undefined){
+    if(connections[req.params.db] === undefined){
         res.status(400).json({'msg': req.i18n.__('Invalid connection')});
         return;
     }
@@ -23,7 +23,7 @@ router.post('/users/:conn/:db/user_create', function (req, res, next){
     }
 
     // Get DB's form pool
-    var mongo_db = connections[req.params.conn].native.db(req.params.db);
+    var mongo_db = connections[req.params.db].native.db(req.params.db);
 
     // do DB stuff
     var roles = req.body.roles_text ? req.body.roles_text.split(/\s*,\s*/) : [];
@@ -40,11 +40,11 @@ router.post('/users/:conn/:db/user_create', function (req, res, next){
 });
 
 // Deletes a user
-router.post('/users/:conn/:db/user_delete', function (req, res, next){
+router.post('/users/:db/user_delete', function (req, res, next){
     var connections = req.app.locals.dbConnections;
 
     // Check for existance of connection
-    if(connections[req.params.conn] === undefined){
+    if(connections[req.params.db] === undefined){
         res.status(400).json({'msg': req.i18n.__('Invalid connection')});
         return;
     }
@@ -55,7 +55,7 @@ router.post('/users/:conn/:db/user_delete', function (req, res, next){
     }
 
     // Get DB form pool
-    var mongo_db = connections[req.params.conn].native.db(req.params.db);
+    var mongo_db = connections[req.params.db].native.db(req.params.db);
 
     // remove a user
     mongo_db.removeUser(req.body.username, function (err, user_name){

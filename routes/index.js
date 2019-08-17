@@ -90,7 +90,7 @@ router.get('/app/connections', function (req, res, next){
 });
 
 // Show server monitoring
-router.get('/app/monitoring/:conn/', function (req, res, next){
+router.get('/app/monitoring/:db/', function (req, res, next){
     var monitoringMessage = '';
     var monitoringRequired = true;
     if(req.nconf.app.get('app:monitoring') === false){
@@ -110,24 +110,23 @@ router.get('/app/monitoring/:conn/', function (req, res, next){
     }
 
     // Check for existance of connection
-    if(connections[req.params.conn] === undefined){
-        common.render_error(res, req, req.i18n.__('Invalid connection name'), req.params.conn);
+    if(connections[req.params.db] === undefined){
+        common.render_error(res, req, req.i18n.__('Invalid connection name'), req.params.db);
         return;
     }
 
     // parse the connection string to get DB
-    var conn_string = connections[req.params.conn].connString;
+    var conn_string = connections[req.params.db].connString;
     var uri = MongoURI.parse(conn_string);
 
     // Get DB's form pool
-    var mongo_db = connections[req.params.conn].native;
+    var mongo_db = connections[req.params.db].native;
     var db_name = uri.database;
 
     common.get_sidebar_list(mongo_db, db_name, function (err, sidebar_list){
         res.render('monitoring', {
             message: monitoringMessage,
             monitoring: monitoringRequired,
-            conn_name: req.params.conn,
             helpers: req.handlebars.helpers,
             sidebar_list: sidebar_list,
             db_name: db_name,
@@ -137,75 +136,74 @@ router.get('/app/monitoring/:conn/', function (req, res, next){
 });
 
 // The base connection route showing all DB's for connection
-router.get('/app/:conn', function (req, res, next){
-    var connections = req.app.locals.dbConnections;
-    var MongoURI = require('mongo-uri');
+// router.get('/app/:db', function (req, res, next){
+//     var connections = req.app.locals.dbConnections;
+//     var MongoURI = require('mongo-uri');
 
-    // if no connection found
-    if(!connections || Object.keys(connections).length === 0){
-        res.redirect(req.app_context + '/app');
-        return;
-    }
+//     // if no connection found
+//     if(!connections || Object.keys(connections).length === 0){
+//         res.redirect(req.app_context + '/app');
+//         return;
+//     }
 
-    // Check for existance of connection
-    if(connections[req.params.conn] === undefined){
-        common.render_error(res, req, req.i18n.__('Invalid connection name'), req.params.conn);
-        return;
-    }
+//     // Check for existance of connection
+//     if(connections[req.params.db] === undefined){
+//         common.render_error(res, req, req.i18n.__('Invalid connection name'), req.params.db);
+//         return;
+//     }
 
-    // parse the connection string to get DB
-    var conn_string = connections[req.params.conn].connString;
-    var uri = MongoURI.parse(conn_string);
+//     // parse the connection string to get DB
+//     var conn_string = connections[req.params.db].connString;
+//     var uri = MongoURI.parse(conn_string);
 
-    // If there is a DB in the connection string, we redirect to the DB level
-    if(uri.database){
-        res.redirect(req.app_context + '/app/' + req.params.conn + '/' + uri.database);
-        return;
-    }
+//     // If there is a DB in the connection string, we redirect to the DB level
+//     if(uri.database){
+//         res.redirect(req.app_context + '/app/' + req.params.db);
+//         return;
+//     }
 
-    // Get DB's form pool
-    var mongo_db = connections[req.params.conn].native;
+//     // Get DB's form pool
+//     var mongo_db = connections[req.params.db].native;
 
-    common.get_db_status(mongo_db, function (err, db_status){
-        common.get_backups(function(err, backup_list){
-            common.get_db_stats(mongo_db, uri.database, function (err, db_stats){
-                common.get_sidebar_list(mongo_db, uri.database, function (err, sidebar_list){
-                    common.get_db_list(uri, mongo_db, function (err, db_list){
-                        res.render('conn', {
-                            conn_list: common.order_object(connections),
-                            db_stats: db_stats,
-                            db_status: db_status,
-                            conn_name: req.params.conn,
-                            sidebar_list: sidebar_list,
-                            db_list: db_list,
-                            backup_list: backup_list,
-                            helpers: req.handlebars.helpers,
-                            session: req.session
-                        });
-                    });
-                });
-            });
-        });
-    });
-});
+//     common.get_db_status(mongo_db, function (err, db_status){
+//         common.get_backups(function(err, backup_list){
+//             common.get_db_stats(mongo_db, uri.database, function (err, db_stats){
+//                 common.get_sidebar_list(mongo_db, uri.database, function (err, sidebar_list){
+//                     common.get_db_list(uri, mongo_db, function (err, db_list){
+//                         res.render('conn', {
+//                             conn_list: common.order_object(connections),
+//                             db_stats: db_stats,
+//                             db_status: db_status,
+//                             sidebar_list: sidebar_list,
+//                             db_list: db_list,
+//                             backup_list: backup_list,
+//                             helpers: req.handlebars.helpers,
+//                             session: req.session
+//                         });
+//                     });
+//                 });
+//             });
+//         });
+//     });
+// });
 
 // The base route at the DB level showing all collections for DB
-router.get('/app/:conn/:db', function (req, res, next){
+router.get('/app/:db', function (req, res, next){
     var connections = req.app.locals.dbConnections;
 
     // Check for existance of connection
-    if(connections[req.params.conn] === undefined){
-        common.render_error(res, req, req.i18n.__('Invalid connection name'), req.params.conn);
+    if(connections[req.params.db] === undefined){
+        common.render_error(res, req, req.i18n.__('Invalid connection name'), req.params.db);
         return;
     }
 
     // Validate database name
     if(req.params.db.indexOf(' ') > -1){
-        common.render_error(res, req, req.i18n.__('Invalid database name'), req.params.conn);
+        common.render_error(res, req, req.i18n.__('Invalid database name'), req.params.db);
         return;
     }
     // Get DB's form pool
-    var mongo_db = connections[req.params.conn].native.db(req.params.db);
+    var mongo_db = connections[req.params.db].native.db(req.params.db);
 
     // do DB stuff
     common.get_db_stats(mongo_db, req.params.db, function (err, db_stats){
@@ -213,7 +211,6 @@ router.get('/app/:conn/:db', function (req, res, next){
             mongo_db.command({usersInfo: 1}, function (err, conn_users){
                 mongo_db.listCollections().toArray(function (err, collection_list){
                     res.render('db', {
-                        conn_name: req.params.conn,
                         conn_list: common.order_object(connections),
                         db_stats: db_stats,
                         conn_users: conn_users,
@@ -231,34 +228,34 @@ router.get('/app/:conn/:db', function (req, res, next){
 });
 
 // Pagination redirect to page 1
-router.get('/app/:conn/:db/:coll/', function (req, res, next){
-    res.redirect(req.app_context + '/app/' + req.params.conn + '/' + req.params.db + '/' + req.params.coll + '/view/1');
+router.get('/app/:db/:coll/', function (req, res, next){
+    res.redirect(req.app_context + '/app/' + req.params.db + '/' + req.params.coll + '/view/1');
 });
 
 // Pagination redirect to page 1
-router.get('/app/:conn/:db/:coll/view/', function (req, res, next){
-    res.redirect(req.app_context + '/app/' + req.params.conn + '/' + req.params.db + '/' + req.params.coll + '/view/1');
+router.get('/app/:db/:coll/view/', function (req, res, next){
+    res.redirect(req.app_context + '/app/' + req.params.db + '/' + req.params.coll + '/view/1');
 });
 
 // Shows the document preview/pagination
-router.get('/app/:conn/:db/:coll/view/:page_num', function (req, res, next){
+router.get('/app/:db/:coll/view/:page_num', function (req, res, next){
     var connections = req.app.locals.dbConnections;
     var docs_per_page = 10;
 
     // Check for existance of connection
-    if(connections[req.params.conn] === undefined){
-        common.render_error(res, req, req.i18n.__('Invalid connection name'), req.params.conn);
+    if(connections[req.params.db] === undefined){
+        common.render_error(res, req, req.i18n.__('Invalid connection name'), req.params.db);
         return;
     }
 
     // Validate database name
     if(req.params.db.indexOf(' ') > -1){
-        common.render_error(res, req, req.i18n.__('Invalid database name'), req.params.conn);
+        common.render_error(res, req, req.i18n.__('Invalid database name'), req.params.db);
         return;
     }
 
     // Get DB's form pool
-    var mongo_db = connections[req.params.conn].native.db(req.params.db);
+    var mongo_db = connections[req.params.db].native.db(req.params.db);
 
     // do DB stuff
     mongo_db.listCollections().toArray(function (err, collection_list){
@@ -267,11 +264,10 @@ router.get('/app/:conn/:db/:coll/view/:page_num', function (req, res, next){
         common.get_sidebar_list(mongo_db, req.params.db, function (err, sidebar_list){
             mongo_db.db(req.params.db).collection(req.params.coll).count(function (err, coll_count){
                 if(collection_list.indexOf(req.params.coll) === -1){
-                    common.render_error(res, req, 'Database or Collection does not exist', req.params.conn);
+                    common.render_error(res, req, 'Database or Collection does not exist', req.params.db);
                 }else{
                     res.render('coll-view', {
                         conn_list: common.order_object(req.nconf.connections.get('connections')),
-                        conn_name: req.params.conn,
                         db_name: req.params.db,
                         coll_name: req.params.coll,
                         coll_count: coll_count,
@@ -292,23 +288,23 @@ router.get('/app/:conn/:db/:coll/view/:page_num', function (req, res, next){
 });
 
 // Show all indexes for collection
-router.get('/app/:conn/:db/:coll/indexes', function (req, res, next){
+router.get('/app/:db/:coll/indexes', function (req, res, next){
     var connections = req.app.locals.dbConnections;
 
     // Check for existance of connection
-    if(connections[req.params.conn] === undefined){
-        common.render_error(res, req, req.i18n.__('Invalid connection name'), req.params.conn);
+    if(connections[req.params.db] === undefined){
+        common.render_error(res, req, req.i18n.__('Invalid connection name'), req.params.db);
         return;
     }
 
     // Validate database name
     if(req.params.db.indexOf(' ') > -1){
-        common.render_error(res, req, req.i18n.__('Invalid database name'), req.params.conn);
+        common.render_error(res, req, req.i18n.__('Invalid database name'), req.params.db);
         return;
     }
 
     // Get DB's form pool
-    var mongo_db = connections[req.params.conn].native.db(req.params.db);
+    var mongo_db = connections[req.params.db].native.db(req.params.db);
 
     // do DB stuff
     mongo_db.listCollections().toArray(function (err, collection_list){
@@ -318,12 +314,11 @@ router.get('/app/:conn/:db/:coll/indexes', function (req, res, next){
             common.get_sidebar_list(mongo_db, req.params.db, function (err, sidebar_list){
                 if(collection_list.indexOf(req.params.coll) === -1){
                     console.error('No collection found');
-                    common.render_error(res, req, 'Database or Collection does not exist', req.params.conn);
+                    common.render_error(res, req, 'Database or Collection does not exist', req.params.db);
                 }else{
                     res.render('coll-indexes', {
                         coll_indexes: coll_indexes,
                         conn_list: common.order_object(connections),
-                        conn_name: req.params.conn,
                         db_name: req.params.db,
                         coll_name: req.params.coll,
                         sidebar_list: sidebar_list,
@@ -338,23 +333,23 @@ router.get('/app/:conn/:db/:coll/indexes', function (req, res, next){
 });
 
 // New document view
-router.get('/app/:conn/:db/:coll/new', function (req, res, next){
+router.get('/app/:db/:coll/new', function (req, res, next){
     var connections = req.app.locals.dbConnections;
 
     // Check for existance of connection
-    if(connections[req.params.conn] === undefined){
-        common.render_error(res, req, req.i18n.__('Invalid connection name'), req.params.conn);
+    if(connections[req.params.db] === undefined){
+        common.render_error(res, req, req.i18n.__('Invalid connection name'), req.params.db);
         return;
     }
 
     // Validate database name
     if(req.params.db.indexOf(' ') > -1){
-        common.render_error(res, req, req.i18n.__('Invalid database name'), req.params.conn);
+        common.render_error(res, req, req.i18n.__('Invalid database name'), req.params.db);
         return;
     }
 
     // Get DB form pool
-    var mongo_db = connections[req.params.conn].native.db(req.params.db);
+    var mongo_db = connections[req.params.db].native.db(req.params.db);
 
     // do DB stuff
     mongo_db.listCollections().toArray(function (err, collection_list){
@@ -363,10 +358,9 @@ router.get('/app/:conn/:db/:coll/new', function (req, res, next){
         common.get_sidebar_list(mongo_db, req.params.db, function (err, sidebar_list){
             if(collection_list.indexOf(req.params.coll) === -1){
                 console.error('No collection found');
-                common.render_error(res, req, 'Database or Collection does not exist', req.params.conn);
+                common.render_error(res, req, 'Database or Collection does not exist', req.params.db);
             }else{
                 res.render('coll-new', {
-                    conn_name: req.params.conn,
                     conn_list: common.order_object(connections),
                     coll_name: req.params.coll,
                     sidebar_list: sidebar_list,
@@ -381,24 +375,24 @@ router.get('/app/:conn/:db/:coll/new', function (req, res, next){
 });
 
 // Shows the document preview/pagination
-router.get('/app/:conn/:db/:coll/:id', function (req, res, next){
+router.get('/app/:db/:coll/:id', function (req, res, next){
     var connections = req.app.locals.dbConnections;
     var docs_per_page = 10;
 
     // Check for existance of connection
-    if(connections[req.params.conn] === undefined){
-        common.render_error(res, req, req.i18n.__('Invalid connection name'), req.params.conn);
+    if(connections[req.params.db] === undefined){
+        common.render_error(res, req, req.i18n.__('Invalid connection name'), req.params.db);
         return;
     }
 
     // Validate database name
     if(req.params.db.indexOf(' ') > -1){
-        common.render_error(res, req, req.i18n.__('Invalid database name'), req.params.conn);
+        common.render_error(res, req, req.i18n.__('Invalid database name'), req.params.db);
         return;
     }
 
     // Get DB's form pool
-    var mongo_db = connections[req.params.conn].native.db(req.params.db);
+    var mongo_db = connections[req.params.db].native.db(req.params.db);
 
     // do DB stuff
     mongo_db.listCollections().toArray(function (err, collection_list){
@@ -407,11 +401,10 @@ router.get('/app/:conn/:db/:coll/:id', function (req, res, next){
         common.get_sidebar_list(mongo_db, req.params.db, function (err, sidebar_list){
             mongo_db.db(req.params.db).collection(req.params.coll).count(function (err, coll_count){
                 if(collection_list.indexOf(req.params.coll) === -1){
-                    common.render_error(res, req, 'Database or Collection does not exist', req.params.conn);
+                    common.render_error(res, req, 'Database or Collection does not exist', req.params.db);
                 }else{
                     res.render('doc-view', {
                         conn_list: common.order_object(req.nconf.connections.get('connections')),
-                        conn_name: req.params.conn,
                         db_name: req.params.db,
                         coll_name: req.params.coll,
                         coll_count: coll_count,
@@ -432,36 +425,36 @@ router.get('/app/:conn/:db/:coll/:id', function (req, res, next){
 });
 
 // Shows document editor
-router.get('/app/:conn/:db/:coll/edit/:doc_id', function (req, res, next){
+router.get('/app/:db/:coll/edit/:doc_id', function (req, res, next){
     var connections = req.app.locals.dbConnections;
     var bsonify = require('./bsonify');
 
     // Check for existance of connection
-    if(connections[req.params.conn] === undefined){
-        common.render_error(res, req, req.i18n.__('Invalid connection name'), req.params.conn);
+    if(connections[req.params.db] === undefined){
+        common.render_error(res, req, req.i18n.__('Invalid connection name'), req.params.db);
         return;
     }
 
     // Validate database name
     if(req.params.db.indexOf(' ') > -1){
-        common.render_error(res, req, req.i18n.__('Invalid database name'), req.params.conn);
+        common.render_error(res, req, req.i18n.__('Invalid database name'), req.params.db);
         return;
     }
 
     // Get DB's form pool
-    var mongo_db = connections[req.params.conn].native.db(req.params.db);
+    var mongo_db = connections[req.params.db].native.db(req.params.db);
 
     // do DB stuff
     common.get_sidebar_list(mongo_db, req.params.db, function(err, sidebar_list){
         common.get_id_type(mongo_db, req.params.coll, req.params.doc_id, function (err, result){
             if(result.doc === undefined){
                 console.error('No document found');
-                common.render_error(res, req, req.i18n.__('Document not found'), req.params.conn);
+                common.render_error(res, req, req.i18n.__('Document not found'), req.params.db);
                 return;
             }
             if(err){
                 console.error('No document found');
-                common.render_error(res, req, req.i18n.__('Document not found'), req.params.conn);
+                common.render_error(res, req, req.i18n.__('Document not found'), req.params.db);
                 return;
             }
 
@@ -493,7 +486,6 @@ router.get('/app/:conn/:db/:coll/edit/:doc_id', function (req, res, next){
             });
 
             res.render('coll-edit', {
-                conn_name: req.params.conn,
                 db_name: req.params.db,
                 conn_list: common.order_object(req.nconf.connections.get('connections')),
                 sidebar_list: sidebar_list,

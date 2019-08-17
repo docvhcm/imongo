@@ -9,13 +9,13 @@ router.all('/api/*', common.checkLogin, function (req, res, next){
 });
 
 // pagination API
-router.post('/api/:conn/:db/:coll/:page', function (req, res, next){
+router.post('/api/:db/:coll/:page', function (req, res, next){
     var connections = req.app.locals.dbConnections;
     var ejson = require('mongodb-extended-json');
     var docs_per_page = parseInt(req.body.docsPerPage) !== undefined ? parseInt(req.body.docsPerPage) : 5;
 
     // Check for existance of connection
-    if(connections[req.params.conn] === undefined){
+    if(connections[req.params.db] === undefined){
         res.status(400).json({'msg': req.i18n.__('Invalid connection name')});
     }
 
@@ -25,7 +25,7 @@ router.post('/api/:conn/:db/:coll/:page', function (req, res, next){
     }
 
     // Get DB's form pool
-    var mongo_db = connections[req.params.conn].native.db(req.params.db);
+    var mongo_db = connections[req.params.db].native.db(req.params.db);
 
     var page_size = docs_per_page;
     var page = 1;
@@ -95,11 +95,11 @@ router.post('/api/:conn/:db/:coll/:page', function (req, res, next){
 });
 
 // Gets monitoring data
-router.get('/api/monitoring/:conn', function (req, res, next){
+router.get('/api/monitoring/:db', function (req, res, next){
     var dayBack = new Date();
     dayBack.setDate(dayBack.getDate() - 1);
 
-    req.db.find({connectionName: req.params.conn, eventDate: {$gte: dayBack}}).sort({eventDate: 1}).exec(function (err, serverEvents){
+    req.db.find({connectionName: req.params.db, eventDate: {$gte: dayBack}}).sort({eventDate: 1}).exec(function (err, serverEvents){
         var connectionsCurrent = [];
         var connectionsAvailable = [];
         var connectionsTotalCreated = [];

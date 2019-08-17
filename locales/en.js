@@ -144,5 +144,6 @@
 	"Query Documents": "Query Documents",
 	"New Document": "New Document",
 	"Create Index": "Create Index",
-	"Create index": "Create index"
+	"Create index": "Create index",
+	"Test": "Test"
 }
