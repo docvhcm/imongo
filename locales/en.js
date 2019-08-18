@@ -147,5 +147,7 @@
 	"Create index": "Create index",
 	"Test": "Test",
 	"Create Collection": "Create Collection",
-	"Collection Name": "Collection Name"
+	"Collection Name": "Collection Name",
+	"Comma separated user roles": "Comma separated user roles",
+	"No user found.": "No user found."
 }

@@ -1,10 +1,9 @@
-<h2 class="text-center">{{__ "Connections"}}</h2>
-{{#if message}}<h3 class="text-danger">{{__ "Connection"}}: {{conn}} - {{message}}</h3>{{/if}}
 <div class="container">
     <div class="col-lg-12">
         <div class="list-group list-group-flush">
+            <h4 class="list-group-item lead text-muted">{{__ "Connections"}}</h4>
             {{#each connections}}
-            <a href="{{@key}}" class="list-group-item btnConnConnect h4" data-connection="{{@key}}">{{@key}}</a>
+            <a href="{{@key}}" class="list-group-item btnConnConnect" data-connection="{{@key}}">{{@key}}</a>
             {{/each}}
         </div>
         <div class="d-flex align-items-center m-4 p-4 justify-content-center">
