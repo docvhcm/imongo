@@ -206,19 +206,24 @@ $(document).ready(function(){
         }
     });
 
+    $('#collectioName').on('shown.bs.modal', function (e){
+        var collection = $(e.relatedTarget).data('collection');
+        $(this).find('.form-control').val(collection);
+        $(this).data('collection', collection);
+    });
+
     $(document).on('click', '#coll_name_edit', function(){
         var newCollName = $('#coll_name_newval').val();
         if(newCollName !== ''){
+            var $collectioName = $('#collectioName');
+            var oldCollection = $collectioName.data('collection');
             $.ajax({
                 method: 'POST',
-                url: $('#app_context').val() + '/collection/' + $('#db_name').val() + '/' + $('#coll_name').val() + '/coll_name_edit',
+                url: $('#app_context').val() + '/collection/' + $('#db_name').val() + '/' + oldCollection + '/coll_name_edit',
                 data: {'new_collection_name': newCollName}
             })
             .done(function(data){
-                $('#headCollectionName').text(newCollName);
-                $('#collectioName').modal('toggle');
-                localStorage.setItem('message_text', data.msg);
-                window.location.href = $('#app_context').val() + '/app/' + $('#db_name').val() + '/' + newCollName + '/view?page=1';
+                show_notification('Collection name is updated succesfully.', 'success', true);
             })
             .fail(function(data){
                 show_notification(data.responseJSON.msg, 'danger');
