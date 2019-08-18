@@ -149,5 +149,6 @@
 	"Create Collection": "Create Collection",
 	"Collection Name": "Collection Name",
 	"Comma separated user roles": "Comma separated user roles",
-	"No user found.": "No user found."
+	"No user found.": "No user found.",
+	"No users found.": "No users found."
 }

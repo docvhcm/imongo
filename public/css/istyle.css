@@ -88,7 +88,7 @@
 }
 
 .json-editor {
-  min-height: 100px;
+  min-height: 48px;
 }
 
 .w-75px {
@@ -111,4 +111,8 @@
   color: #fff !important;
   border-left: 2px solid #007bff !important;
   background: #007bff !important;
+}
+
+.ace_content {
+  background-color: #fffff6;
 }
