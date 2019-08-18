@@ -118,14 +118,15 @@
                     <nav class="navbar navbar-expand-lg navbar-light bg-light">
                         <div class="collapse navbar-collapse" id="navbarSupportedContent">
                             <ul class="breadcrumb d-flex align-items-center mr-auto bg-transparent m-0 py-0">
-                                <li class="breadcrumb-item">
+                                <li class="breadcrumb-item d-flex align-items-center">
+                                    <i class="material-icons text-muted md-18 mr-2">home</i>
                                     <a href="{{app_context}}/app">
                                         iMongo
                                     </a>
                                 </li>
                                 {{#if db_name}}
                                 <li class="breadcrumb-item d-flex align-items-center">
-                                    <i class="material-icons md-18 mr-2">grid_on</i>
+                                    <i class="material-icons text-muted md-18 mr-2">power</i>
                                     <a href="{{app_context}}/app/{{db_name}}">
                                         {{db_name}}
                                     </a>
@@ -133,11 +134,11 @@
                                 {{/if}}
                                 {{#if coll_name}}
                                 <li class="breadcrumb-item d-flex align-items-center">
-                                    <i class="material-icons md-18 mr-2">grid_on</i>
+                                    <i class="material-icons text-muted md-18 mr-2">grid_on</i>
                                     <a href="{{app_context}}/app/{{db_name}}/{{coll_name}}"
                                         class="text-info">{{coll_name}}</a>
-                                    <a data-toggle="modal" data-target="#collectioName">
-                                        <i class="material-icons md-18 mx-2">edit</i>
+                                    <a data-toggle="modal" data-target="#collectioName" class="clickable">
+                                        <i class="material-icons text-muted md-18 mx-2">edit</i>
                                     </a>
                                 </li>
                                 {{/if}}
