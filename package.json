@@ -72,7 +72,7 @@
     "nedb": "^1.8.0",
     "node-delete": "^0.1.2",
     "node-fetch": "^2.6.0",
-    "redis": "^2.8.0",
+    "redis": "^3.1.1",
     "serve-favicon": "~2.4.3"
   },
   "license": "MIT",
